@@ -1,4 +1,4 @@
-package service;
+package com.abernathyclinic.patientriskassessment.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
