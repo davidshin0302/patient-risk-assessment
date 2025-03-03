@@ -1,0 +1,22 @@
+######################
+# Spring Configuration
+#####################
+spring:
+  application:
+  name: PatientRiskAssessment
+#####################
+# Actuator Configuration
+#####################
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, httpexchanges
+#####################
+# Server Configuration
+#####################
+server:
+  port: 8080
