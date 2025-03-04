@@ -1,5 +1,6 @@
 package com.abernathyclinic.patientriskassessment.service;
 
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordDTO;
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,11 @@ public class PatientRecordClient {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8082").build();
     }
 
-    public Mono<PatientRecordsDTO> fetchPatientRecords() {
+    public Mono<PatientRecordDTO> fetchPatientRecords(String padId) {
         return webClient.get()
-                .uri("/patHistory/get/patient-records")
+                .uri("/patHistory/get/?patId=" + padId)
                 .retrieve()
-                .bodyToMono(PatientRecordsDTO.class)
+                .bodyToMono(PatientRecordDTO.class)
                 .doOnSuccess(patientRecordsDTO -> {
                     log.info("Successfully fetched patient records: {}", patientRecordsDTO);
                 })

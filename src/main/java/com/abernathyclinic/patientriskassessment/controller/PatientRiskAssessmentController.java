@@ -1,14 +1,13 @@
 package com.abernathyclinic.patientriskassessment.controller;
 
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordsDTO;
-import com.abernathyclinic.patientriskassessment.service.PatientDemoGraphicsApiClient;
+import com.abernathyclinic.patientriskassessment.service.PatientDemographicsApiClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRecordClient;
+import com.abernathyclinic.patientriskassessment.service.PatientRiskAssessmentService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -18,13 +17,12 @@ public class PatientRiskAssessmentController {
     @Autowired
     private PatientRecordClient patientRecordClient;
     @Autowired
-    private PatientDemoGraphicsApiClient patientDemoGraphicsApiClient;
+    private PatientDemographicsApiClient patientDemoGraphicsApiClient;
+    @Autowired
+    private PatientRiskAssessmentService patientRiskAssessmentService;
 
     @GetMapping("/{id}")
-    public Mono<PatientRecordsDTO> getPatientRiskAssessment(@PathVariable String id) {
-//        patientRiskAssessmentService = new PatientRiskAssessmentService(patientRecordClient.fetchPatientRecords(), patientDemoGraphicsApiClient.fetchPatientDemoGraphicData());
-        return patientRecordClient.fetchPatientRecords();
-//        patientDemoGraphicsApiClient.fetchPatientDemoGraphicData();
-
+    public Mono<String> getPatientRiskAssessment(@Valid @PathVariable String id, @Valid @RequestParam  String patId) {
+        return patientRiskAssessmentService.getAssessmentById(patId, id);
     }
 }

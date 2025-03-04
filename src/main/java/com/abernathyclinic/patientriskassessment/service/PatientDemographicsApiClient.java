@@ -9,11 +9,11 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-public class PatientDemoGraphicsApiClient {
+public class PatientDemographicsApiClient {
     private final WebClient webClient;
 
     @Autowired
-    public PatientDemoGraphicsApiClient(WebClient.Builder webClientBuilder) {
+    public PatientDemographicsApiClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8081").build();
     }
 
