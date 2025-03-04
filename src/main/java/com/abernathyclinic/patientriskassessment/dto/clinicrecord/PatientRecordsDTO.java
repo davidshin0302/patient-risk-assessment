@@ -1,5 +1,6 @@
 package com.abernathyclinic.patientriskassessment.dto.clinicrecord;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatientRecordsDTO {
-    List<PatientRecordDTO> patientRecords;
+    private List<PatientRecordDTO> patientRecords;
 }

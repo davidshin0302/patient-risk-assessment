@@ -1,5 +1,6 @@
 package com.abernathyclinic.patientriskassessment.controller;
 
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordsDTO;
 import com.abernathyclinic.patientriskassessment.service.PatientDemoGraphicsApiClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRecordClient;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,10 @@ public class PatientRiskAssessmentController {
     private PatientDemoGraphicsApiClient patientDemoGraphicsApiClient;
 
     @GetMapping("/{id}")
-    public Mono<String> getPatientRiskAssessment(@PathVariable String id) {
+    public Mono<PatientRecordsDTO> getPatientRiskAssessment(@PathVariable String id) {
 //        patientRiskAssessmentService = new PatientRiskAssessmentService(patientRecordClient.fetchPatientRecords(), patientDemoGraphicsApiClient.fetchPatientDemoGraphicData());
-        patientRecordClient.fetchPatientRecords();
-        patientDemoGraphicsApiClient.fetchPatientDemoGraphicData();
-        return Mono.just("Hello");
+        return patientRecordClient.fetchPatientRecords();
+//        patientDemoGraphicsApiClient.fetchPatientDemoGraphicData();
+
     }
 }

@@ -1,11 +1,5 @@
 package com.abernathyclinic.patientriskassessment.service;
 
-import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordsDTO;
-import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-
 //@Service
 //public class PatientRiskAssessmentService {
 //    private Mono<PatientRecordsDTO> patientRecordsDTO;
