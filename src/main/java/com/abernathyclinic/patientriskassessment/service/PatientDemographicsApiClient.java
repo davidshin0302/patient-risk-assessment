@@ -21,6 +21,12 @@ public class PatientDemographicsApiClient {
         return webClient.get()
                 .uri("/patients")
                 .retrieve()
-                .bodyToMono(PatientListDTO.class);
+                .bodyToMono(PatientListDTO.class)
+                .doOnSuccess(patientRecordsDTO -> {
+                    log.info("Successfully fetched patient records: {}", patientRecordsDTO);
+                })
+                .doOnError(error -> {
+                    log.error("Error fetching patient records: {}", error.getMessage(), error);
+                });
     }
 }
