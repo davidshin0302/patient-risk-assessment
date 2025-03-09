@@ -6,6 +6,8 @@ import com.abernathyclinic.patientriskassessment.service.PatientRecordClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRiskAssessmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,20 @@ public class PatientRiskAssessmentController {
     private PatientRiskAssessmentService patientRiskAssessmentService;
 
     @GetMapping("/{id}")
-    public void getPatientRiskAssessmentById(@PathVariable String id) {
-        patientRiskAssessmentService.getPatientRiskAssessment();
+    public ResponseEntity<String> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
+        ResponseEntity<String> responseEntity;
+
+        try {
+            patientRiskAssessmentService.getPatientRiskAssessment(patId);
+        responseEntity = ResponseEntity.status(HttpStatus.OK).build();
+
+        log.info("Processing get patent assessment by id:" + patId);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            log.error("Unable to get patient assement from the Id: {}", patId);
+            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return responseEntity;
     }
 }
