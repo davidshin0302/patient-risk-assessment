@@ -13,6 +13,10 @@ public class PatientRiskAssessmentService {
     @Autowired
     private PatientRecordClient patientRecordClient;
 
+    public boolean findPatientById(String patId){
+
+    }
+
     public void getPatientRiskAssessment(String patId) {
         Mono<PatientListDTO> patientListDTOMono = patientDemoGraphicsApiClient.fetchPatientDemoGraphicData();
         Mono<PatientRecordDTO> patientRecordsDTOMono = patientRecordClient.fetchPatientRecords(patId);
