@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class PatientRiskAssessmentService {
     @Autowired
-    private PatientDemoGraphicsApiClient patientDemoGraphicsApiClient;
+    private PatientDemographicsApiClient patientDemographicsApiClient;
     @Autowired
     private PatientRecordClient patientRecordClient;
 
@@ -34,7 +34,7 @@ public class PatientRiskAssessmentService {
 
         //I want to implement to return if getPaitentRecord is empty because I know there are no data so no point of continuing below logic.
 
-        Mono<PatientListDTO> patientListDTOMono = patientDemoGraphicsApiClient.fetchPatientDemoGraphicData();
+        Mono<PatientListDTO> patientListDTOMono = patientDemographicsApiClient.fetchPatientDemoGraphicData();
 
         Mono.zip(patientListDTOMono, patientRecordsDTOMono).map(tuple -> {
                     PatientListDTO patientListDTO = tuple.getT1();
