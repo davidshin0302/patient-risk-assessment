@@ -1,8 +1,9 @@
 package com.abernathyclinic.patientriskassessment.service;
 
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.ClinicalNoteDTO;
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordDTO;
+import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientDTO;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
-import com.abernathyclinic.patientriskassessment.model.PatientDiabetesAssessment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,32 +30,47 @@ public class PatientRiskAssessmentService {
                 });
     }
 
-    public String extractPatientName(String note) {
+    public String extractPatientName(ClinicalNoteDTO clinicalNoteDTO) {
         String prefix = "patient: ";
-
+        String patientLastName = "";
+        String note = clinicalNoteDTO.getNote();
         int startIndex = note.toLowerCase().indexOf(prefix);
-        int endIndex;
 
         if (startIndex != -1) {
-            startIndex += prefix.length();
-            endIndex = note.indexOf(" ", startIndex);
+            startIndex += prefix.length(); // Move index to end of prefix
+            int endIndex = note.toLowerCase().indexOf(" ", startIndex); // Find end index after finding patient lastName.
 
             if (endIndex != -1) {
-                return note.substring(startIndex, endIndex);
+                patientLastName = note.substring(startIndex, endIndex);
+                log.info("patientLastName: {}", patientLastName);
             }
         }
-        return null;
+        return patientLastName;
     }
 
-    public Mono<PatientDiabetesAssessment> getPatientRiskAssessment(String patId) {
+    public PatientDTO findPatientFromPatientList(PatientListDTO patientListDTO, String lastName) {
+        log.info("PatientList: {}", patientListDTO);
+        log.info("patient found last name: {}", lastName);
+        PatientDTO patientDTO = null;
+
+        for (PatientDTO patient : patientListDTO.getPatientList()) {
+            if (patient.getFamilyName().equalsIgnoreCase(lastName)) {
+                patientDTO = patient;
+            }
+        }
+        return patientDTO;
+    }
+
+    public Mono<PatientDTO> getPatientRiskAssessment(String patId) {
         return getPatientRecord(patId)
                 .flatMap(patientRecordDTO -> {
                     Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
 
                     return Mono.zip(patientListDTO, Mono.just(patientRecordDTO), (tuple1, tuple2) -> {
-
-                        return
-                    })
-                })
+                        PatientDTO patientDTO = findPatientFromPatientList(tuple1, extractPatientName(tuple2.getClinicalNotes().getFirst()));
+                        log.info("PatintDTO: {} ", patientDTO);
+                        return patientDTO;
+                    });
+                });
     }
 }
