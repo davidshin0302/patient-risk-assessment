@@ -1,5 +1,6 @@
 package com.abernathyclinic.patientriskassessment.controller;
 
+import com.abernathyclinic.patientriskassessment.model.PatientRisk;
 import com.abernathyclinic.patientriskassessment.service.PatientDemographicsApiClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRecordClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRiskAssessmentService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -24,12 +26,12 @@ public class PatientRiskAssessmentController {
     private PatientRiskAssessmentService patientRiskAssessmentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
-        ResponseEntity<String> responseEntity;
+    public ResponseEntity<Mono<PatientRisk>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
+        ResponseEntity<Mono<PatientRisk>> responseEntity;
 
         try {
-            patientRiskAssessmentService.getPatientRiskAssessment(patId);
-            responseEntity = ResponseEntity.status(HttpStatus.OK).build();
+            Mono<PatientRisk> patientRisk = patientRiskAssessmentService.getPatientRiskAssessment(patId);
+            responseEntity = ResponseEntity.status(HttpStatus.OK).body(patientRisk);
 
             log.info("Processing get patent assessment by id:" + patId);
         } catch (Exception ex) {

@@ -44,11 +44,11 @@ public class PatientDemographicsApiClient {
                             )));
                 })
                 .bodyToMono(PatientListDTO.class)
-                .doOnSuccess(patientRecordsDTO -> {
-                    log.info("Successfully fetched patient records: {}", patientRecordsDTO);
+                .doOnSuccess(patientListDTO -> {
+                    log.info("Successfully fetched list of patient demographic : {}", patientListDTO);
                 })
                 .doOnError(error -> {
-                    log.error("Error fetching patient records: {}", error.getMessage(), error);
+                    log.error("Error fetching list of patient demographic: {}", error.getMessage(), error);
                 });
     }
 }
