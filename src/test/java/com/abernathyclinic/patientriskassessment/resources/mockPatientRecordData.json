@@ -1,0 +1,18 @@
+{
+  "id": "67b54e384b869657978fa6c1",
+  "patId": "1",
+  "clinicalNotes": [
+    {
+      "date": "2025-02-18",
+      "note": "Patient: TestBorderline Practitioner's notes/recommendations: Patient states that they are feeling a great deal of stress at work Patient also complains that their hearing seems Abnormal as of late"
+    },
+    {
+      "date": "2025-03-10",
+      "note": "Patient: TestNone Practitioner's notes/recommendations: Patient states that they are 'feeling terrific' Weight at or below recommended level"
+    },
+    {
+      "date": "2025-03-11",
+      "note": "Patient: TestNone Practitioner's notes/recommendations: Patient states that they are 'feeling terrific' Weight at or below recommended level"
+    }
+  ]
+}
