@@ -8,14 +8,13 @@ import com.abernathyclinic.patientriskassessment.service.PatientRecordClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRiskAssessmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -26,10 +25,9 @@ import java.io.IOException;
 import static org.mockito.ArgumentMatchers.any;
 import static reactor.core.publisher.Mono.when;
 
-@WebMvcTest(PatientRiskAssessmentController.class)
+@WebFluxTest(PatientRiskAssessmentController.class)
 class PatientRiskAssessmentControllerTest {
-    @InjectMocks
-    PatientRiskAssessmentController patientRiskAssessmentController;
+    static MockWebServer mockBackEnd;
 
     @MockitoBean
     PatientRiskAssessmentService patientRiskAssessmentService;
@@ -43,11 +41,23 @@ class PatientRiskAssessmentControllerTest {
     @Autowired
     WebTestClient webTestClient;
 
-    Mono<PatientListDTO> patientListDTOMono;
+    PatientListDTO patientListDTOMono;
 
-    Mono<PatientRecordDTO> patientRecordDTOMono;
+    PatientRecordDTO patientRecordDTOMono;
 
-    Mono<PatientRisk> patientRiskMono;
+    PatientRisk patientRiskMono;
+
+    @BeforeAll
+    static void setUpMockWebServer() throws IOException {
+        mockBackEnd = new MockWebServer();
+        mockBackEnd.start();
+    }
+
+    @AfterAll
+    static void tearDownMockWebServer() throws IOException {
+        mockBackEnd.shutdown();
+    }
+
 
     @BeforeEach
     void setUp() throws IOException {
@@ -55,16 +65,14 @@ class PatientRiskAssessmentControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        patientListDTOMono = Mono.just(objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class));
-        patientRecordDTOMono = Mono.just(objectMapper.readValue(new File(FILE_PATH + "mockPatientRecordData.json"), PatientRecordDTO.class));
-        patientRiskMono = Mono.just(objectMapper.readValue(new File(FILE_PATH + "mockPatientRiskData.json"), PatientRisk.class));
+        patientListDTOMono = objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class);
+        patientRecordDTOMono = objectMapper.readValue(new File(FILE_PATH + "mockPatientRecordData.json"), PatientRecordDTO.class);
+        patientRiskMono = objectMapper.readValue(new File(FILE_PATH + "mockPatientRiskData.json"), PatientRisk.class);
 
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTOMono));
+        when(patientRecordClient.fetchPatientRecords(any(String.class))).thenReturn(Mono.just(patientRecordDTOMono));
+        when(patientRiskAssessmentService.getPatientRiskAssessment(any(String.class))).thenReturn(Mono.just(patientRiskMono));
 
-        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(patientListDTOMono);
-        when(patientRecordClient.fetchPatientRecords(any(String.class))).thenReturn(patientRecordDTOMono);
-        when(patientRiskAssessmentService.getPatientRiskAssessment(any(String.class))).thenReturn(patientRiskMono);
-
-        webTestClient = WebTestClient.bindToController(patientRiskAssessmentController).build();
     }
 
     @Test
