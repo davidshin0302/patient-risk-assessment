@@ -1,14 +1,12 @@
 package com.abernathyclinic.patientriskassessment.service;
 
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.ClinicalNoteDTO;
-import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordDTO;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientDTO;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
 import com.abernathyclinic.patientriskassessment.model.PatientRisk;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -24,18 +22,6 @@ public class PatientRiskAssessmentService {
     private PatientDemographicsApiClient patientDemographicsApiClient;
     @Autowired
     private PatientRecordClient patientRecordClient;
-
-    public Mono<PatientRecordDTO> getPatientRecord(String patId) {
-        return patientRecordClient.fetchPatientRecords(patId)
-                .onErrorResume(WebClientResponseException.class, ex -> {
-                    if (ex.getStatusCode().value() == 404) {
-                        log.warn("Unable to find Patient Record by patId: {}", patId);
-                    } else {
-                        log.error("Error fetching patient record: {}, Status Code: {}, Response Body: {}", patId, ex.getStatusCode(), ex.getResponseBodyAsString());
-                    }
-                    return Mono.empty();
-                });
-    }
 
     public String extractPatientName(ClinicalNoteDTO clinicalNoteDTO) {
         String prefix = "patient: ";
@@ -103,15 +89,13 @@ public class PatientRiskAssessmentService {
     }
 
     public Mono<PatientRisk> getPatientRiskAssessment(String patId) {
-        return getPatientRecord(patId)
-                .flatMap(patientRecordDTO -> {
-                    Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
+        return patientRecordClient.fetchPatientRecords(patId).flatMap(patientRecordDTO -> {
+            Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
 
-                    return Mono.zip(patientListDTO, Mono.just(patientRecordDTO), (tuple1, tuple2) -> {
-                        String lastName = extractPatientName(tuple2.getClinicalNotes().getFirst());
-
-                        return buildPatientRisk(tuple1.getPatientList(), lastName);
-                    });
-                });
+            return Mono.zip(patientListDTO, Mono.just(patientRecordDTO), (tuple1, tuple2) -> {
+                String lastName = extractPatientName(tuple2.getClinicalNotes().getFirst());
+                return buildPatientRisk(tuple1.getPatientList(), lastName);
+            });
+        });
     }
 }

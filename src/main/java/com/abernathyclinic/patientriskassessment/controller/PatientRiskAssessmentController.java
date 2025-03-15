@@ -26,20 +26,13 @@ public class PatientRiskAssessmentController {
     private PatientRiskAssessmentService patientRiskAssessmentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mono<PatientRisk>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
-        ResponseEntity<Mono<PatientRisk>> responseEntity;
-
-        try {
-            Mono<PatientRisk> patientRisk = patientRiskAssessmentService.getPatientRiskAssessment(patId);
-            responseEntity = ResponseEntity.status(HttpStatus.OK).body(patientRisk);
-
-            log.info("Processing get patent assessment by id:" + patId);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            log.error("Unable to get patient assement from the Id: {}", patId);
-            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        return responseEntity;
+    public Mono<ResponseEntity<PatientRisk>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
+        return patientRiskAssessmentService.getPatientRiskAssessment(patId)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build())
+                .onErrorResume(ex -> {
+                    log.error("Internal Server Error: {}", ex.getMessage(), ex);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 }
