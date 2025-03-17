@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -24,24 +23,13 @@ public class PatientRecordClient {
                 .uri("/patHistory/get?patId=" + patId)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
-                    return clientResponse.bodyToMono(String.class)
-                            .flatMap(errorBody -> Mono.error(new WebClientResponseException(
-                                    clientResponse.statusCode().value(),
-                                    "Client Error: " + clientResponse.statusCode(),
-                                    clientResponse.headers().asHttpHeaders(),
-                                    errorBody.getBytes(),
-                                    null
-                            )));
+                    log.error("4xx Client Error Detected: {}", clientResponse.statusCode());
+                    return Mono.empty();
+
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, response -> {
-                    return response.bodyToMono(String.class)
-                            .flatMap(errorBody -> Mono.error(new WebClientResponseException(
-                                    response.statusCode().value(),
-                                    "Server Error: " + response.statusCode(),
-                                    response.headers().asHttpHeaders(),
-                                    errorBody.getBytes(),
-                                    null
-                            )));
+                    log.error("500 Client Error Detected: {}", response.statusCode());
+                    return Mono.empty();
                 })
                 .bodyToMono(PatientRecordDTO.class)
                 .doOnSuccess(patientRecordDTO -> {

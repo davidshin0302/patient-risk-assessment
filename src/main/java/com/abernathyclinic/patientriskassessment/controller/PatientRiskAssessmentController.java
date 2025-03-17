@@ -1,6 +1,6 @@
 package com.abernathyclinic.patientriskassessment.controller;
 
-import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientDTO;
+import com.abernathyclinic.patientriskassessment.model.PatientRisk;
 import com.abernathyclinic.patientriskassessment.service.PatientDemographicsApiClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRecordClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRiskAssessmentService;
@@ -26,20 +26,13 @@ public class PatientRiskAssessmentController {
     private PatientRiskAssessmentService patientRiskAssessmentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mono<PatientDTO>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
-        ResponseEntity<Mono<PatientDTO>> responseEntity;
-
-        try {
-            Mono<PatientDTO> patientDTO = patientRiskAssessmentService.getPatientRiskAssessment(patId);
-            responseEntity = ResponseEntity.status(HttpStatus.OK).body(patientDTO);
-
-            log.info("Processing get patent assessment by id:" + patId);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            log.error("Unable to get patient assement from the Id: {}", patId);
-            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        return responseEntity;
+    public Mono<ResponseEntity<PatientRisk>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
+        return patientRiskAssessmentService.getPatientRiskAssessment(patId)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build())
+                .onErrorResume(ex -> {
+                    log.error("Internal Server Error: {}", ex.getMessage(), ex);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 }
