@@ -29,7 +29,10 @@ public class PatientRiskAssessmentController {
     public Mono<ResponseEntity<PatientRisk>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
         return patientRiskAssessmentService.getPatientRiskAssessment(patId)
                 .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build())
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.error("The Id is not found: {}", patId);
+                    return Mono.just(ResponseEntity.notFound().build());
+                }))
                 .onErrorResume(ex -> {
                     log.error("Internal Server Error: {}", ex.getMessage(), ex);
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
