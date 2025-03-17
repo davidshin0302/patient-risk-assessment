@@ -1,4 +1,4 @@
-package com.abernathyclinic.patientriskassessment.Util;
+package com.abernathyclinic.patientriskassessment.util;
 
 import java.util.Arrays;
 import java.util.HashSet;

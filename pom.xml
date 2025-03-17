@@ -141,6 +141,7 @@
                         <exclude>com/abernathyclinic/patientriskassessment/dto/*</exclude>
                         <exclude>com/abernathyclinic/patientriskassessment/model/*</exclude>
                         <exclude>com/abernathyclinic/patientriskassessment/property/*</exclude>
+                        <exclude>com/abernathyclinic/patientriskassessment/util/*</exclude>
                         <exclude>com/abernathyclinic/patientriskassessment/PatientRiskAssessmentApplication*
                         </exclude>
                     </excludes>
