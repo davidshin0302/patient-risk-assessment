@@ -27,6 +27,7 @@ public class PatientRiskAssessmentController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<PatientRisk>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
+        log.info("Processing assess/{} request.", patId);
         return patientRiskAssessmentService.getPatientRiskAssessment(patId)
                 .map(ResponseEntity::ok)
                 .switchIfEmpty(Mono.defer(() -> {
