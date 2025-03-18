@@ -13,7 +13,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -48,7 +50,7 @@ public class PatientRiskAssessmentService {
     private String ageCalculator(String birthDate) {
         LocalDate parseDate;
         Period period;
-        String output = "NaN";
+        String output = "";
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate currentDate = LocalDate.now();
@@ -65,25 +67,26 @@ public class PatientRiskAssessmentService {
     }
 
     private PatientRisk buildPatientRisk(List<PatientDTO> patientListDTO, String lastName) {
+        boolean isPatientExist = false;
+        PatientRisk patientRisk;
         PatientDTO patientDTO = new PatientDTO();
-        PatientRisk patientRisk = new PatientRisk();
-        String age;
 
         for (PatientDTO patient : patientListDTO) {
             if (patient.getFamilyName().equalsIgnoreCase(lastName.toLowerCase())) {
                 patientDTO = patient;
+                isPatientExist = true;
+                break;
             }
         }
 
-        if (patientDTO.getId() != null) {
-            int endIndex = patientDTO.getDateOfBirth().indexOf("-");
-            String birthYear = patientDTO.getDateOfBirth().substring(0, endIndex);
-
+        if (isPatientExist) {
             patientRisk = PatientRisk.builder()
                     .firstName(patientDTO.getGivenName())
                     .lastName(patientDTO.getFamilyName())
                     .age(ageCalculator(patientDTO.getDateOfBirth()))
                     .build();
+        } else {
+            patientRisk = null;
         }
         return patientRisk;
     }
@@ -93,8 +96,14 @@ public class PatientRiskAssessmentService {
             Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
 
             return Mono.zip(patientListDTO, Mono.just(patientRecordDTO), (tuple1, tuple2) -> {
-                String lastName = extractPatientName(tuple2.getClinicalNotes().getFirst());
+
                 return buildPatientRisk(tuple1.getPatientList(), lastName);
+            }).flatMap(patientRisk -> {
+                if (patientRisk == null) {
+                    return Mono.empty();
+                } else {
+                    return Mono.just(patientRisk);
+                }
             });
         });
     }
