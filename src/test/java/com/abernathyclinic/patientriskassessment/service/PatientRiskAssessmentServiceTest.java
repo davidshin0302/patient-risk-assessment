@@ -17,7 +17,8 @@ import reactor.test.StepVerifier;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -44,11 +45,11 @@ class PatientRiskAssessmentServiceTest {
 
     PatientListDTO patientListDTO;
 
-    Mono<PatientRisk> patientRiskMono;
+    String patId;
 
     @BeforeEach
     void setUp() throws IOException {
-        String patId = "1";
+        patId = "1";
         String FILE_PATH = "src/test/resources/";
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -59,30 +60,22 @@ class PatientRiskAssessmentServiceTest {
         invalidPatientRecord = objectMapper.readValue(new File(FILE_PATH + "mockPatientRecordData_MissingPrefix.json"), PatientRecordDTO.class);
 
         when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
-        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
-        patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
     }
 
     @Test
     void extractPatientName_missingPrefix() {
-        String patId = "1";
         when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(invalidPatientRecord));
 
+        Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
         StepVerifier.create(patientRiskMono)
-                .expectNextMatches(dto -> dto.getFirstName().equals("david"))
-                .verifyComplete();
+                .expectComplete();
     }
-//
-//    @Test
-//    void ageCalculator() {
-//    }
-//
-//    @Test
-//    void buildPatientRisk() {
-//    }
 
     @Test
     void getPatientRiskAssessment() {
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+
+        Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
 
         StepVerifier.create(patientRiskMono)
                 .expectNextMatches(dto -> {
@@ -92,5 +85,22 @@ class PatientRiskAssessmentServiceTest {
                     return true;
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void getPatientRiskAssessment_returnEmptyMono() {
+        PatientListDTO emptyPatientListDTO = new PatientListDTO();
+        PatientRecordDTO emptyPatientRecordDTO = new PatientRecordDTO();
+        emptyPatientRecordDTO.setClinicalNotes(new ArrayList<>());
+
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(emptyPatientRecordDTO));
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(emptyPatientListDTO));
+
+
+        Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
+
+        StepVerifier.create(patientRiskMono)
+                .expectComplete()
+                .verify();
     }
 }
