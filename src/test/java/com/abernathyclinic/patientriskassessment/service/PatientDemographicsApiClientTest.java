@@ -3,7 +3,6 @@ package com.abernathyclinic.patientriskassessment.service;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-@Slf4j
 class PatientDemographicsApiClientTest {
     PatientDemographicsApiClient patientDemographicsApiClient;
 

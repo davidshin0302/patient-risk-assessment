@@ -25,3 +25,8 @@ server:
 #####################
 patient-demographic:
   base-url: http://localhost:8081
+#####################
+# Patient Record Endpoint
+#####################
+patient-record:
+  base-url: http://localhost:8082
