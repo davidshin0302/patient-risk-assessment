@@ -41,7 +41,7 @@ class PatientRecordClientTest {
 
         patientRecordDTO = objectMapper.readValue(new File(FILE_PATH), PatientRecordDTO.class);
 
-        String patId= "1";
+        String patId = "1";
         String url = mockWebServer.url("/patHistory/get?patId=" + patId).toString();
         patientRecordClient = new PatientRecordClient(WebClient.builder(), url);
     }
@@ -65,6 +65,28 @@ class PatientRecordClientTest {
                     assertNotNull(patientRecrod);
                     return true;
                 })
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchPatientRecords_NotFound() {
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(HttpStatus.NOT_FOUND.value()));
+
+        String patId= "99";
+        Mono<PatientRecordDTO> output = patientRecordClient.fetchPatientRecords(patId);
+        StepVerifier.create(output)
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchPatientRecords_InternalError(){
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+
+        String patId= "2";
+        Mono<PatientRecordDTO> output = patientRecordClient.fetchPatientRecords(patId);
+        StepVerifier.create(output)
                 .verifyComplete();
     }
 }
