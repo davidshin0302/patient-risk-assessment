@@ -36,10 +36,10 @@ class PatientRiskAssessmentControllerTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        String FILE_PATH = "src/test/java/com/abernathyclinic/patientriskassessment/resources/";
+        String FILE_PATH = "src/test/resources/mockPatientRiskData.json";
         ObjectMapper objectMapper = new ObjectMapper();
 
-        patientRisk = objectMapper.readValue(new File(FILE_PATH + "mockPatientRiskData.json"), PatientRisk.class);
+        patientRisk = objectMapper.readValue(new File(FILE_PATH), PatientRisk.class);
 
         when(patientRiskAssessmentService.getPatientRiskAssessment(anyString())).thenReturn(Mono.just(patientRisk));
     }
