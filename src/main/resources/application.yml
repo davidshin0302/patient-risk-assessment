@@ -20,3 +20,8 @@ management:
 #####################
 server:
   port: 8080
+#####################
+# Patient DemoGraphic Endpoint
+#####################
+patient-demographic:
+  base-url: http://localhost:8081

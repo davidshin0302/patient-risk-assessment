@@ -1,8 +1,10 @@
 package com.abernathyclinic.patientriskassessment.service;
 
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,9 +15,10 @@ import reactor.core.publisher.Mono;
 public class PatientDemographicsApiClient {
     private final WebClient webClient;
 
+
     @Autowired
-    public PatientDemographicsApiClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8081").build();
+    public PatientDemographicsApiClient(WebClient.Builder webClientBuilder, @Value("${patient-demographic.base-url}")  String url) {
+        this.webClient = webClientBuilder.baseUrl(url).build();
     }
 
     public Mono<PatientListDTO> fetchPatientDemoGraphicData() {
