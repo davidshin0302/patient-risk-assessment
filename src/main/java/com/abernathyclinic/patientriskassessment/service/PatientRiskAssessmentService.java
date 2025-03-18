@@ -23,7 +23,7 @@ public class PatientRiskAssessmentService {
     @Autowired
     private PatientRecordClient patientRecordClient;
 
-    public String extractPatientName(ClinicalNoteDTO clinicalNoteDTO) {
+    private String extractPatientName(ClinicalNoteDTO clinicalNoteDTO) {
         String prefix = "patient: ";
         String lastName = "";
         String note = clinicalNoteDTO.getNote();
@@ -45,7 +45,7 @@ public class PatientRiskAssessmentService {
         return lastName;
     }
 
-    public String ageCalculator(String birthDate) {
+    private String ageCalculator(String birthDate) {
         LocalDate parseDate;
         Period period;
         String output = "NaN";
@@ -64,7 +64,7 @@ public class PatientRiskAssessmentService {
         return output;
     }
 
-    public PatientRisk buildPatientRisk(List<PatientDTO> patientListDTO, String lastName) {
+    private PatientRisk buildPatientRisk(List<PatientDTO> patientListDTO, String lastName) {
         PatientDTO patientDTO = new PatientDTO();
         PatientRisk patientRisk = new PatientRisk();
         String age;

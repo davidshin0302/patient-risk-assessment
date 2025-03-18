@@ -11,11 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -31,11 +33,18 @@ class PatientRiskAssessmentServiceTest {
     @Mock
     PatientDemographicsApiClient patientDemographicsApiClient;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     PatientRisk patientRisk;
 
     PatientRecordDTO patientRecordDTO;
 
+    PatientRecordDTO invalidPatientRecord;
+
     PatientListDTO patientListDTO;
+
+    Mono<PatientRisk> patientRiskMono;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -47,14 +56,22 @@ class PatientRiskAssessmentServiceTest {
         patientRisk = objectMapper.readValue(new File(FILE_PATH + "mockPatientRiskData.json"), PatientRisk.class);
         patientRecordDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientRecordData.json"), PatientRecordDTO.class);
         patientListDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class);
+        invalidPatientRecord = objectMapper.readValue(new File(FILE_PATH + "mockPatientRecordData_MissingPrefix.json"), PatientRecordDTO.class);
 
         when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
         when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
     }
 
-//    @Test
-//    void extractPatientName() {
-//    }
+    @Test
+    void extractPatientName_missingPrefix() {
+        String patId = "1";
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(invalidPatientRecord));
+
+        StepVerifier.create(patientRiskMono)
+                .expectNextMatches(dto -> dto.getFirstName().equals("david"))
+                .verifyComplete();
+    }
 //
 //    @Test
 //    void ageCalculator() {
@@ -66,8 +83,7 @@ class PatientRiskAssessmentServiceTest {
 
     @Test
     void getPatientRiskAssessment() {
-        String patId = "1";
-        Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
+
         StepVerifier.create(patientRiskMono)
                 .expectNextMatches(dto -> {
                     assertEquals(dto.getAge(), patientRisk.getAge());
