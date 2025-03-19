@@ -1,5 +1,5 @@
 ```toml
-name = 'getNoneDiabetesAssessment'
+name = 'get_risk_level_ferguson'
 method = 'GET'
 url = '   http://localhost:8080/assess/1'
 sortWeight = 1000000
