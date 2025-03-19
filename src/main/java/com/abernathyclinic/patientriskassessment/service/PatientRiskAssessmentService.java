@@ -13,9 +13,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -66,13 +64,13 @@ public class PatientRiskAssessmentService {
         return output;
     }
 
-    private PatientRisk buildPatientRisk(List<PatientDTO> patientListDTO, String lastName) {
+    private Mono<PatientRisk> buildPatientRisk(List<PatientDTO> patientListDTO, String lastName) {
         boolean isPatientExist = false;
         PatientRisk patientRisk;
         PatientDTO patientDTO = new PatientDTO();
 
         for (PatientDTO patient : patientListDTO) {
-            if (patient.getFamilyName().equalsIgnoreCase(lastName.toLowerCase())) {
+            if (patient.getFamilyName() != null && patient.getFamilyName().equalsIgnoreCase(lastName.toLowerCase())) {
                 patientDTO = patient;
                 isPatientExist = true;
                 break;
@@ -81,30 +79,35 @@ public class PatientRiskAssessmentService {
 
         if (isPatientExist) {
             patientRisk = PatientRisk.builder()
-                    .firstName(patientDTO.getGivenName())
-                    .lastName(patientDTO.getFamilyName())
-                    .age(ageCalculator(patientDTO.getDateOfBirth()))
+                    .firstName(patientDTO.getGivenName() != null ? patientDTO.getGivenName() : "")
+                    .lastName(patientDTO.getFamilyName() != null ? patientDTO.getFamilyName() : "")
+                    .age(ageCalculator(patientDTO.getDateOfBirth()) != null ? ageCalculator(patientDTO.getDateOfBirth()) : "")
                     .build();
         } else {
             patientRisk = null;
         }
-        return patientRisk;
+        return (patientRisk != null) ? Mono.just(patientRisk) : Mono.empty();
     }
 
     public Mono<PatientRisk> getPatientRiskAssessment(String patId) {
-        return patientRecordClient.fetchPatientRecords(patId).flatMap(patientRecordDTO -> {
-            Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
+        return patientRecordClient.fetchPatientRecords(patId)
+                .flatMap(patientRecordDTO -> {
+                    Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
 
-            return Mono.zip(patientListDTO, Mono.just(patientRecordDTO), (tuple1, tuple2) -> {
+                    return Mono.zip(patientListDTO, Mono.just(patientRecordDTO), (tuple1, tuple2) -> {
+                        // Early return for null or empty clinical notes
+                        if (tuple2.getClinicalNotes() == null || tuple2.getClinicalNotes().isEmpty()) {
+                            return Mono.<PatientRisk>empty();
+                        }
 
-                return buildPatientRisk(tuple1.getPatientList(), lastName);
-            }).flatMap(patientRisk -> {
-                if (patientRisk == null) {
-                    return Mono.empty();
-                } else {
-                    return Mono.just(patientRisk);
-                }
-            });
-        });
+                        String lastName = extractPatientName(tuple2.getClinicalNotes().getFirst());
+                        Mono<PatientRisk> patientRiskMono = buildPatientRisk(tuple1.getPatientList(), lastName);
+
+                        // Early return if no risk is found
+                        return patientRiskMono;
+                    }).flatMap(patientRiskMono ->
+                            patientRiskMono.switchIfEmpty(Mono.empty()) // Ensures Mono.empty is returned if no risk is found
+                    );
+                });
     }
 }
