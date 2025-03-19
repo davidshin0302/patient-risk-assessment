@@ -1,6 +1,8 @@
 package com.abernathyclinic.patientriskassessment.service;
 
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.ClinicalNoteDTO;
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordDTO;
+import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientDTO;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
 import com.abernathyclinic.patientriskassessment.model.PatientRisk;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,8 +19,7 @@ import reactor.test.StepVerifier;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -74,6 +75,7 @@ class PatientRiskAssessmentServiceTest {
     @Test
     void getPatientRiskAssessment() {
         when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
 
         Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
 
@@ -88,19 +90,143 @@ class PatientRiskAssessmentServiceTest {
     }
 
     @Test
-    void getPatientRiskAssessment_returnEmptyMono() {
-        PatientListDTO emptyPatientListDTO = new PatientListDTO();
-        PatientRecordDTO emptyPatientRecordDTO = new PatientRecordDTO();
-        emptyPatientRecordDTO.setClinicalNotes(new ArrayList<>());
+    void patientRecordClient_emptyMono() {
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.empty());
+        Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
 
-        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(emptyPatientRecordDTO));
-        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(emptyPatientListDTO));
+        StepVerifier.create(patientRiskMono).expectComplete();
+    }
 
+    @Test
+    void getPatientRiskAssessment_patientRecordApiReturnsEmpty() {
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.empty());
 
         Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
 
         StepVerifier.create(patientRiskMono)
                 .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void getPatientRiskAssessment_emptyNote() {
+        PatientRecordDTO patientRecordDTOEmptyNote = new PatientRecordDTO();
+        ClinicalNoteDTO clinicalNoteDTO = new ClinicalNoteDTO();
+        clinicalNoteDTO.setNote("");
+
+        List<ClinicalNoteDTO> clinicalNotes = new ArrayList<>();
+        clinicalNotes.add(clinicalNoteDTO);
+
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTOEmptyNote));
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+
+        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(patId))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void getPatientRiskAssessment_patientNotFound() {
+        PatientListDTO patientListDTONotFound = new PatientListDTO();
+        PatientDTO patient = new PatientDTO();
+        patient.setFamilyName("david");
+
+        List<PatientDTO> patientDTOList = new ArrayList<>();
+        patientListDTONotFound.setPatientList(patientDTOList);
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTONotFound));
+
+        PatientRecordDTO patientRecordDTO = new PatientRecordDTO();
+        ClinicalNoteDTO clinicalNoteDTO = new ClinicalNoteDTO();
+        clinicalNoteDTO.setNote("patient: shin");
+        patientRecordDTO.setClinicalNotes(Collections.singletonList(clinicalNoteDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
+
+        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(patId))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void getPatientRiskAssessment_nullClinicalNotes() {
+        PatientRecordDTO patientRecordDTONullNotes = new PatientRecordDTO();
+        patientRecordDTONullNotes.setClinicalNotes(null);
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTONullNotes));
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+
+        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(patId))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void getPatientRiskAssessment_emptyClinicalNotes() {
+        PatientRecordDTO patientRecordDTOEmptyNotes = new PatientRecordDTO();
+        patientRecordDTOEmptyNotes.setClinicalNotes(new LinkedList<>());
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTOEmptyNotes));
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+
+        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(patId))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void testGetPatientRiskAssessment_patientNotFound() {
+        String lastName = "NonExistentLastName"; // This should not match any patient
+
+        // Mock PatientDemographicsApiClient to return a list with no matching last name
+        PatientDTO patientDTO1 = new PatientDTO();
+        patientDTO1.setFamilyName("shin");
+
+        PatientDTO patientDTO2 = new PatientDTO();
+        patientDTO2.setFamilyName("kim");
+
+        PatientListDTO patientListDTO = new PatientListDTO();
+        patientListDTO.setPatientList(Arrays.asList(patientDTO1, patientDTO2));
+
+        // Mock PatientRecordClient to return valid patient data but no matching clinical note
+        PatientRecordDTO patientRecordDTO = new PatientRecordDTO();
+        ClinicalNoteDTO clinicalNoteDTO = new ClinicalNoteDTO();
+        clinicalNoteDTO.setNote("random clinical note");
+
+        patientRecordDTO.setClinicalNotes(Collections.singletonList(clinicalNoteDTO));
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
+
+        Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
+
+        StepVerifier.create(patientRiskMono)
+                .expectComplete() // Expect the result to complete without any patient risk found
+                .verify();
+    }
+
+    @Test
+    void testGetPatientRiskAssessment_patientDTOWithNullFields() {
+        String patId = "1";
+        String lastName = "david";
+
+        PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setFamilyName(lastName);
+        patientDTO.setGivenName(null);
+        patientDTO.setDateOfBirth(null);
+
+        PatientListDTO patientListDTO = new PatientListDTO();
+        patientListDTO.setPatientList(Collections.singletonList(patientDTO));
+
+        PatientRecordDTO patientRecordDTO = new PatientRecordDTO();
+        ClinicalNoteDTO clinicalNoteDTO = new ClinicalNoteDTO();
+        clinicalNoteDTO.setNote("Patient: shin");
+        patientRecordDTO.setClinicalNotes(Collections.singletonList(clinicalNoteDTO));
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
+
+        Mono<PatientRisk> patientRiskMono = patientRiskAssessmentService.getPatientRiskAssessment(patId);
+
+        StepVerifier.create(patientRiskMono)
+                .expectComplete() // Expecting the Mono to complete without emitting a value
                 .verify();
     }
 }
