@@ -101,10 +101,9 @@ public class PatientRiskAssessmentService {
                         }
 
                         String lastName = extractPatientName(tuple2.getClinicalNotes().getFirst());
-                        Mono<PatientRisk> patientRiskMono = buildPatientRisk(tuple1.getPatientList(), lastName);
 
                         // Early return if no risk is found
-                        return patientRiskMono;
+                        return buildPatientRisk(tuple1.getPatientList(), lastName);
                     }).flatMap(patientRiskMono ->
                             patientRiskMono.switchIfEmpty(Mono.empty()) // Ensures Mono.empty is returned if no risk is found
                     );

@@ -173,7 +173,7 @@ class PatientRiskAssessmentServiceTest {
 
     @Test
     void testGetPatientRiskAssessment_patientNotFound() {
-        String lastName = "NonExistentLastName"; // This should not match any patient
+        String lastName = "NonExistentLastName";
 
         // Mock PatientDemographicsApiClient to return a list with no matching last name
         PatientDTO patientDTO1 = new PatientDTO();
@@ -204,8 +204,7 @@ class PatientRiskAssessmentServiceTest {
 
     @Test
     void testGetPatientRiskAssessment_patientDTOWithNullFields() {
-        String patId = "1";
-        String lastName = "david";
+        String lastName = "lee";
 
         PatientDTO patientDTO = new PatientDTO();
         patientDTO.setFamilyName(lastName);
