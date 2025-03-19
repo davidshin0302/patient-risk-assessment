@@ -1,5 +1,5 @@
 ```toml
-name = 'addPatientRecord_6'
+name = 'addPatientRecord_ross_2'
 method = 'POST'
 url = "http://localhost:8082/patHistory/add?patId=6&note=Patient: Ross Practitioner's notes/recommendations: Patient states that they feel fine"
 sortWeight = 6000000

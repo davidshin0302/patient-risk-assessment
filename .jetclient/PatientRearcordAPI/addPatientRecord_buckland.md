@@ -1,5 +1,5 @@
 ```toml
-name = 'addPatientRecord_8'
+name = 'addPatientRecord_buckland'
 method = 'POST'
 url = "http://localhost:8082/patHistory/add?patId=8&note=Patient: Buckland Practitioner's notes/recommendations: Lab results indicate Antibodies present elevated Hemoglobin A1C above recommended level "
 sortWeight = 8000000

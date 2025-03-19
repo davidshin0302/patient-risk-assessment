@@ -1,5 +1,5 @@
 ```toml
-name = 'addPatientRecord_5'
+name = 'addPatientRecord_ince_4'
 method = 'POST'
 url = "http://localhost:8082/patHistory/add?patId=5&note=Patient: Ince Practitioner's notes/recommendations: Patient states that they had multiple dizziness episodes since last visit Lab results indicate Antibodies present elevated"
 sortWeight = 5000000

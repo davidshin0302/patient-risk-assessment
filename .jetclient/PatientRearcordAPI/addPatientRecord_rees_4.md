@@ -1,5 +1,5 @@
 ```toml
-name = 'addPatientRecord_2'
+name = 'addPatientRecord_rees_4'
 method = 'POST'
 url = "http://localhost:8082/patHistory/add?patId=2&note=Patient: Rees Practitioner's notes/recommendations: Patient states that everything seems fine Lab reports Hemoglobin A1C above recommended level Patient admits to being long term Smoker"
 sortWeight = 1500000

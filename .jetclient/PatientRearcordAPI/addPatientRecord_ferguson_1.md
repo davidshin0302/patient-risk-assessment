@@ -1,5 +1,5 @@
 ```toml
-name = 'addPatientRecord_1'
+name = 'addPatientRecord_ferguson_1'
 method = 'POST'
 url = "http://localhost:8082/patHistory/add?patId=1&note=Patient: Ferguson Practitioner's notes/recommendations: Patient states that they not feeling as tired Smoker, quit within last year Lab results indicate Antibodies present elevated "
 sortWeight = 1000000
