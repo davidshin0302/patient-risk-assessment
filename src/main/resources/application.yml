@@ -1,0 +1,32 @@
+######################
+# Spring Configuration
+#####################
+spring:
+  application:
+  name: PatientRiskAssessment
+#####################
+# Actuator Configuration
+#####################
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, httpexchanges
+#####################
+# Server Configuration
+#####################
+server:
+  port: 8080
+#####################
+# Patient DemoGraphic Endpoint
+#####################
+patient-demographic:
+  base-url: http://localhost:8081
+#####################
+# Patient Record Endpoint
+#####################
+patient-record:
+  base-url: http://localhost:8082
