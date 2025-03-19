@@ -1,5 +1,7 @@
 package com.abernathyclinic.patientriskassessment.util;
 
+import org.springframework.util.StringUtils;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +29,7 @@ public class TriggerTermUtil {
         }
 
         for (String term : TRIGGER_TERMS) {
-            if (term.toLowerCase().contains(note.toLowerCase())) {
-                totalCount++;
-            }
+            totalCount += StringUtils.countOccurrencesOf(note, term);
         }
 
         return totalCount;

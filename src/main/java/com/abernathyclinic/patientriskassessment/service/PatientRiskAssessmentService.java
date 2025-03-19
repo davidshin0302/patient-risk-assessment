@@ -4,6 +4,7 @@ import com.abernathyclinic.patientriskassessment.dto.clinicrecord.ClinicalNoteDT
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientDTO;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
 import com.abernathyclinic.patientriskassessment.model.PatientRisk;
+import com.abernathyclinic.patientriskassessment.util.TriggerTermUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,42 @@ public class PatientRiskAssessmentService {
         return output;
     }
 
-    private Mono<PatientRisk> buildPatientRisk(List<PatientDTO> patientListDTO, String lastName) {
+    public String determineRiskLevel(List<ClinicalNoteDTO> clinicalNotes, PatientDTO patientDTO) {
+        final String FEMALE = "f";
+        final String MALE = "f";
+        String result = "None";
+        String gender = patientDTO.getSex();
+        int matchedTriggers = 0;
+        int age = Integer.parseInt(ageCalculator(patientDTO.getDateOfBirth()));
+
+        if (!clinicalNotes.isEmpty()) {
+            for (ClinicalNoteDTO clinicalNote : clinicalNotes) {
+                matchedTriggers += TriggerTermUtil.countTriggerTerms(clinicalNote.getNote());
+            }
+        }
+
+        if (age > 30 && matchedTriggers == 2) {
+            result = "Borderline";
+        }
+
+        if (((age < 30 && gender.equalsIgnoreCase(MALE) && (matchedTriggers == 3))
+                || (age < 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 4)
+                || (age > 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 6))) {
+            result = "In danger";
+        }
+
+        if ((age < 30 && gender.equalsIgnoreCase(MALE) && matchedTriggers == 5)
+                || (age < 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 7)
+                || (age < 30 && matchedTriggers == 8)) {
+
+            result = "Early Onset";
+        }
+
+        //patient has no doctor’s notes containing any of the trigger
+        return result;
+    }
+
+    private Mono<PatientRisk> buildPatientRisk(List<PatientDTO> patientListDTO, List<ClinicalNoteDTO> clinicalNotes, String lastName) {
         boolean isPatientExist = false;
         PatientRisk patientRisk;
         PatientDTO patientDTO = new PatientDTO();
@@ -78,10 +114,14 @@ public class PatientRiskAssessmentService {
         }
 
         if (isPatientExist) {
+            String patientAge = ageCalculator(patientDTO.getDateOfBirth());
+            String riskLevel = determineRiskLevel(clinicalNotes, patientDTO);
+
             patientRisk = PatientRisk.builder()
                     .firstName(patientDTO.getGivenName() != null ? patientDTO.getGivenName() : "")
                     .lastName(patientDTO.getFamilyName() != null ? patientDTO.getFamilyName() : "")
-                    .age(ageCalculator(patientDTO.getDateOfBirth()) != null ? ageCalculator(patientDTO.getDateOfBirth()) : "")
+                    .age(patientAge != null ? patientAge : "")
+                    .riskLevel(riskLevel != null ? riskLevel : "")
                     .build();
         } else {
             patientRisk = null;
@@ -103,7 +143,7 @@ public class PatientRiskAssessmentService {
                         String lastName = extractPatientName(tuple2.getClinicalNotes().getFirst());
 
                         // Early return if no risk is found
-                        return buildPatientRisk(tuple1.getPatientList(), lastName);
+                        return buildPatientRisk(tuple1.getPatientList(), tuple2.getClinicalNotes(), lastName);
                     }).flatMap(patientRiskMono ->
                             patientRiskMono.switchIfEmpty(Mono.empty()) // Ensures Mono.empty is returned if no risk is found
                     );
