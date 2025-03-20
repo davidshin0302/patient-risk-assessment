@@ -67,7 +67,7 @@ public class PatientRiskAssessmentService {
 
     public String determineRiskLevel(List<ClinicalNoteDTO> clinicalNotes, PatientDTO patientDTO) {
         final String FEMALE = "f";
-        final String MALE = "f";
+        final String MALE = "m";
         String result = "None";
         String gender = patientDTO.getSex();
         int matchedTriggers = 0;
@@ -79,20 +79,20 @@ public class PatientRiskAssessmentService {
             }
         }
 
+        System.out.println("Age: " + age + "Gender: " + gender + " Counts: " + matchedTriggers);
         if (age > 30 && matchedTriggers == 2) {
             result = "Borderline";
         }
 
         if (((age < 30 && gender.equalsIgnoreCase(MALE) && (matchedTriggers == 3))
                 || (age < 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 4)
-                || (age > 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 6))) {
+                || (age > 30 && matchedTriggers == 6))) {
             result = "In danger";
         }
 
         if ((age < 30 && gender.equalsIgnoreCase(MALE) && matchedTriggers == 5)
                 || (age < 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 7)
-                || (age < 30 && matchedTriggers == 8)) {
-
+                || (age > 30 && matchedTriggers >= 8)) {
             result = "Early Onset";
         }
 
