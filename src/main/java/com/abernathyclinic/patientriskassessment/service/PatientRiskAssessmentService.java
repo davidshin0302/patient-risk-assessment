@@ -79,15 +79,14 @@ public class PatientRiskAssessmentService {
             }
         }
 
-        System.out.println("Age: " + age + " Gender: " + gender + " Counts: " + matchedTriggers);
         if (matchedTriggers == 0) {
-            return "None"; // Explicitly check for None
+            return "None";
         }
 
         if ((age < 30 && gender.equals(MALE) && matchedTriggers >= 5)
                 || (age < 30 && gender.equals(FEMALE) && matchedTriggers >= 7)
                 || (age >= 30 && matchedTriggers >= 8)) {
-            result = "Early Onset";
+            result = "Early onset";
         } else if (((age < 30 && gender.equals(MALE) && matchedTriggers == 3)
                 || (age < 30 && gender.equals(FEMALE) && matchedTriggers == 4)
                 || (age >= 30 && matchedTriggers == 6))) {
@@ -96,8 +95,8 @@ public class PatientRiskAssessmentService {
             result = "Borderline";
         }
 
-        //patient has no doctor’s notes containing any of the trigger
-        return result;
+
+        return result; //patient has no doctor’s notes containing any of the trigger
     }
 
     private Mono<PatientRisk> buildPatientRisk(List<PatientDTO> patientListDTO, List<ClinicalNoteDTO> clinicalNotes, String lastName) {
