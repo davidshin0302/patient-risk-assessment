@@ -1,10 +1,14 @@
 {
-  "id": "67db158193d18513ebd97c8d",
+  "id": "67dcc2bdf270366f20ee0c27",
   "patId": "1",
   "clinicalNotes": [
     {
-      "date": "2025-03-19",
-      "note": "Patient: Ferguson Practitioner's notes/recommendations: Patient states that they not feeling as tired Smoker, quit within last year Lab results indicate Antibodies present elevated "
+      "date": "2025-03-20",
+      "note": "Patient: TestBorderline Practitioner's notes/recommendations: Patient states that they are feeling a great deal of stress at work Patient also complains that their hearing seems Abnormal as of late"
+    },
+    {
+      "date": "2025-03-20",
+      "note": "Patient: TestBorderline Practitioner's notes/recommendations: Patient states that they have had a Reaction to medication within last 3 months Patient also complains that their hearing continues to be problematic"
     }
   ]
 }

@@ -1,5 +1,5 @@
 ```toml
-name = 'get_risk_level_early_on_site'
+name = 'get_risk_level_early_onset'
 method = 'GET'
 url = '   http://localhost:8080/assess/14'
 sortWeight = 4000000

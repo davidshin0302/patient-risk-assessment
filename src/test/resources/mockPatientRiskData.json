@@ -1,6 +1,6 @@
 {
   "firstName": "Test",
-  "lastName": "TestBorderline",
-  "age": "79",
-  "riskLevel": null
+  "lastName": "TestNone",
+  "age": "58",
+  "riskLevel": "None"
 }

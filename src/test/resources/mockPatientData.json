@@ -2,93 +2,39 @@
   "patientList": [
     {
       "id": 1,
-      "givenName": "Lucas",
-      "familyName": "Ferguson",
-      "dateOfBirth": "1968-06-22",
-      "sex": "M",
-      "homeAddress": "2 Warren Street",
-      "phoneNumber": "387-866-1399"
+      "givenName": "Test",
+      "familyName": "TestNone",
+      "dateOfBirth": "1966-12-30",
+      "sex": "F",
+      "homeAddress": "1 Brrokside St",
+      "phoneNumber": "100-222-3333"
     },
     {
       "id": 2,
-      "givenName": "Pippa",
-      "familyName": "Rees",
-      "dateOfBirth": "1952-09-27",
-      "sex": "F",
-      "homeAddress": "745 West Valley Farms Drive",
-      "phoneNumber": "628-423-0993"
+      "givenName": "Test",
+      "familyName": "TestBorderline",
+      "dateOfBirth": "1945-06-21",
+      "sex": "M",
+      "homeAddress": "2 High St",
+      "phoneNumber": "200-333-4444"
     },
     {
       "id": 3,
-      "givenName": "Edward",
-      "familyName": "Arnold",
-      "dateOfBirth": "1952-11-11",
+      "givenName": "Test",
+      "familyName": "TestInDanger",
+      "dateOfBirth": "2004-06-18",
       "sex": "M",
-      "homeAddress": "599 East Garden Ave",
-      "phoneNumber": "123-727-2779"
+      "homeAddress": "2 High St",
+      "phoneNumber": "200-333-4444"
     },
     {
       "id": 4,
-      "givenName": "Anthony",
-      "familyName": "Sharp",
-      "dateOfBirth": "1946-11-26",
-      "sex": "M",
-      "homeAddress": "894 Hall Street",
-      "phoneNumber": "451-761-8383"
-    },
-    {
-      "id": 5,
-      "givenName": "Wendy",
-      "familyName": "Ince",
-      "dateOfBirth": "1958-06-29",
+      "givenName": "Test",
+      "familyName": "TestEarlyOnset",
+      "dateOfBirth": "2002-06-28",
       "sex": "F",
-      "homeAddress": "4 Southampton Road",
-      "phoneNumber": "802-911-9975 "
-    },
-    {
-      "id": 6,
-      "givenName": "Tracey",
-      "familyName": "Ross",
-      "dateOfBirth": "1949-12-07",
-      "sex": "F",
-      "homeAddress": "40 Sulphur Springs Dr",
-      "phoneNumber": "131-396-5049 "
-    },
-    {
-      "id": 7,
-      "givenName": "Claire",
-      "familyName": "Wilson",
-      "dateOfBirth": "1966-12-31",
-      "sex": "F",
-      "homeAddress": "12 Cobblestone St",
-      "phoneNumber": "300-452-1091 "
-    },
-    {
-      "id": 8,
-      "givenName": "Max",
-      "familyName": "Buckland",
-      "dateOfBirth": "1945-06-24",
-      "sex": "M",
-      "homeAddress": "193 Vale St",
-      "phoneNumber": "833-534-0864 "
-    },
-    {
-      "id": 9,
-      "givenName": "Natalie",
-      "familyName": "Clark",
-      "dateOfBirth": "1964-06-18",
-      "sex": "F",
-      "homeAddress": "12 Beechwood Road",
-      "phoneNumber": "241-467-9197"
-    },
-    {
-      "id": 10,
-      "givenName": "Piers",
-      "familyName": "Bailey",
-      "dateOfBirth": "1959-06-28",
-      "sex": "M",
-      "homeAddress": "1202 Bumble Dr",
-      "phoneNumber": "747-815-0557"
+      "homeAddress": "4 Valley Dr",
+      "phoneNumber": "400-555-6666"
     }
   ]
 }
