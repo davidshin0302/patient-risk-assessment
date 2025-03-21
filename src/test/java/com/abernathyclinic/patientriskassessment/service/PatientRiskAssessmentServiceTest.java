@@ -114,7 +114,7 @@ class PatientRiskAssessmentServiceTest {
         PatientListDTO patientListDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class);
         PatientRisk patientRisk = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelInDanger.json"), PatientRisk.class);
         PatientRecordDTO patientRecordDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestInDanger.json"), PatientRecordDTO.class);
-        String patId = "13";
+        String patId = "14";
 
 
         when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
@@ -139,10 +139,60 @@ class PatientRiskAssessmentServiceTest {
         ClinicalNoteDTO clinicalNoteDTO = new ClinicalNoteDTO();
         clinicalNoteDTO.setNote("patient: shin");
         patientRecordDTO.setClinicalNotes(Collections.singletonList(clinicalNoteDTO));
+
         when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
 
         StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(patId))
                 .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void assertPatientRiskAssessment_returnEmptyMono() throws IOException {
+        String invalidId = "#";
+        PatientRecordDTO patientRecordDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestInDanger.json"), PatientRecordDTO.class);
+
+        patientRecordDTO.setClinicalNotes(null);
+        when(patientRecordClient.fetchPatientRecords(invalidId)).thenReturn(Mono.just(patientRecordDTO));
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(new PatientListDTO()));
+
+        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(invalidId))
+                .expectComplete()
+                .verify();
+
+        patientRecordDTO.setClinicalNotes(Collections.emptyList());
+        when(patientRecordClient.fetchPatientRecords(invalidId)).thenReturn(Mono.just(patientRecordDTO));
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(new PatientListDTO()));
+
+        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(invalidId))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void getPatientRiskAssessment_shouldReturnEmpty_whenNoMatchingPatient() {
+        String patId = "789";
+
+        PatientDTO differentPatient = new PatientDTO();
+        differentPatient.setFamilyName("Doe"); // Mismatch
+        differentPatient.setGivenName("Jane");
+        differentPatient.setDateOfBirth("1990-02-15");
+        differentPatient.setSex("F");
+
+        ClinicalNoteDTO clinicalNote = new ClinicalNoteDTO();
+        clinicalNote.setNote("Patient: Smith. Diagnosed with hypertension."); // Smith, but no matching patient
+
+        PatientListDTO patientList = new PatientListDTO();
+        patientList.setPatientList(Collections.singletonList(differentPatient));
+
+        PatientRecordDTO patientRecordDTO = new PatientRecordDTO();
+        patientRecordDTO.setClinicalNotes(Collections.singletonList(clinicalNote));
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientList));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
+
+        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(patId))
+                .expectComplete() // No match, so should return Mono.empty()
                 .verify();
     }
 }
