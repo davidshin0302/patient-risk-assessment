@@ -37,7 +37,7 @@ class PatientRiskAssessmentControllerTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        String FILE_PATH = "src/test/resources/mockPatientRiskData.json";
+        String FILE_PATH = "src/test/resources/mockRiskLevelNoneData.json";
         ObjectMapper objectMapper = new ObjectMapper();
 
         patientRisk = objectMapper.readValue(new File(FILE_PATH), PatientRisk.class);

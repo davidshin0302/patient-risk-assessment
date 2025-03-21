@@ -35,7 +35,7 @@ class PatientRecordClientTest {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
-        String FILE_PATH = "src/test/resources/mockPatientRecordData.json";
+        String FILE_PATH = "src/test/resources/mockPatientNoteTestNone.json";
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
