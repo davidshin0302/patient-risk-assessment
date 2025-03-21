@@ -1,6 +1,5 @@
 package com.abernathyclinic.patientriskassessment.controller;
 
-import com.abernathyclinic.patientriskassessment.model.PatientRisk;
 import com.abernathyclinic.patientriskassessment.service.PatientDemographicsApiClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRecordClient;
 import com.abernathyclinic.patientriskassessment.service.PatientRiskAssessmentService;
@@ -26,10 +25,12 @@ public class PatientRiskAssessmentController {
     private PatientRiskAssessmentService patientRiskAssessmentService;
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<PatientRisk>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
+    public Mono<ResponseEntity<String>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
         log.info("Processing assess/{} request.", patId);
         return patientRiskAssessmentService.getPatientRiskAssessment(patId)
-                .map(ResponseEntity::ok)
+                .map(patientRisk -> {
+                    return ResponseEntity.status(HttpStatus.OK).body(patientRisk.toString());
+                })
                 .switchIfEmpty(Mono.defer(() -> {
                     log.error("The Id is not found: {}", patId);
                     return Mono.just(ResponseEntity.notFound().build());
