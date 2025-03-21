@@ -69,7 +69,7 @@ public class PatientRiskAssessmentService {
         final String FEMALE = "f";
         final String MALE = "m";
         String result = "None";
-        String gender = patientDTO.getSex();
+        String gender = patientDTO.getSex().toLowerCase();
         int matchedTriggers = 0;
         int age = Integer.parseInt(ageCalculator(patientDTO.getDateOfBirth()));
 
@@ -79,21 +79,21 @@ public class PatientRiskAssessmentService {
             }
         }
 
-        System.out.println("Age: " + age + "Gender: " + gender + " Counts: " + matchedTriggers);
-        if (age > 30 && matchedTriggers == 2) {
-            result = "Borderline";
+        System.out.println("Age: " + age + " Gender: " + gender + " Counts: " + matchedTriggers);
+        if (matchedTriggers == 0) {
+            return "None"; // Explicitly check for None
         }
 
-        if (((age < 30 && gender.equalsIgnoreCase(MALE) && (matchedTriggers == 3))
-                || (age < 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 4)
-                || (age > 30 && matchedTriggers == 6))) {
-            result = "In danger";
-        }
-
-        if ((age < 30 && gender.equalsIgnoreCase(MALE) && matchedTriggers == 5)
-                || (age < 30 && gender.equalsIgnoreCase(FEMALE) && matchedTriggers == 7)
-                || (age > 30 && matchedTriggers >= 8)) {
+        if ((age < 30 && gender.equals(MALE) && matchedTriggers >= 5)
+                || (age < 30 && gender.equals(FEMALE) && matchedTriggers >= 7)
+                || (age >= 30 && matchedTriggers >= 8)) {
             result = "Early Onset";
+        } else if (((age < 30 && gender.equals(MALE) && matchedTriggers == 3)
+                || (age < 30 && gender.equals(FEMALE) && matchedTriggers == 4)
+                || (age >= 30 && matchedTriggers == 6))) {
+            result = "In danger";
+        } else if (age >= 30 && matchedTriggers == 2) {
+            result = "Borderline";
         }
 
         //patient has no doctor’s notes containing any of the trigger
