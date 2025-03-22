@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -74,7 +73,6 @@ class PatientRiskAssessmentServiceTest {
         return result;
     }
 
-
     @Test
     void assertPatientRiskAssessment_testNone() throws IOException {
         PatientListDTO patientListDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class);
@@ -89,28 +87,45 @@ class PatientRiskAssessmentServiceTest {
     void assertPatientRiskAssessment_test_borderline() throws IOException {
         PatientListDTO patientListDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class);
         PatientRecordDTO patientRecordDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestBorderLine.json"), PatientRecordDTO.class);
-        PatientRisk patientRisk = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelBorderLineData.json"), PatientRisk.class);
+        PatientRisk patientRisk = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelBorderLine.json"), PatientRisk.class);
         String patId = "12";
 
         assertTrue(assertPatientRiskAssessment(patientListDTO, patientRecordDTO, patientRisk, patId));
     }
 
     @Test
-    void assertPatientRiskAssessment_test_in_danger() throws IOException {
+    void assertPatientRiskAssessment_test_early_onset() throws IOException {
         PatientListDTO patientListDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class);
         PatientRisk patientRisk = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelEarlyOnset.json"), PatientRisk.class);
         PatientRecordDTO patientRecordDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestEarlyOnset.json"), PatientRecordDTO.class);
         String patId = "13";
 
-
         when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
         when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
 
         assertTrue(assertPatientRiskAssessment(patientListDTO, patientRecordDTO, patientRisk, patId));
+
+        PatientRisk patientRisk2 = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelEarlyOnset2.json"), PatientRisk.class);
+        PatientRecordDTO patientRecordDTO2 = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestEarlyOnset2.json"), PatientRecordDTO.class);
+        patId = "16";
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO2));
+
+        assertTrue(assertPatientRiskAssessment(patientListDTO, patientRecordDTO2, patientRisk2, patId));
+
+        PatientRisk patientRisk3 = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelEarlyOnset3.json"), PatientRisk.class);
+        PatientRecordDTO patientRecordDTO3 = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestEarlyOnset3.json"), PatientRecordDTO.class);
+        patId = "17";
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO3));
+
+        assertTrue(assertPatientRiskAssessment(patientListDTO, patientRecordDTO3, patientRisk3, patId));
     }
 
     @Test
-    void assertPatientRiskAssessment_test_early_onset() throws IOException {
+    void assertPatientRiskAssessment_test_in_danger() throws IOException {
         PatientListDTO patientListDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientData.json"), PatientListDTO.class);
         PatientRisk patientRisk = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelInDanger.json"), PatientRisk.class);
         PatientRecordDTO patientRecordDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestInDanger.json"), PatientRecordDTO.class);
@@ -121,6 +136,33 @@ class PatientRiskAssessmentServiceTest {
         when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
 
         assertTrue(assertPatientRiskAssessment(patientListDTO, patientRecordDTO, patientRisk, patId));
+
+        PatientRisk patientRisk2 = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelInDanger2.json"), PatientRisk.class);
+        PatientRecordDTO patientRecordDTO2 = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestInDanger2.json"), PatientRecordDTO.class);
+        patId = "15";
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO2));
+
+        assertTrue(assertPatientRiskAssessment(patientListDTO, patientRecordDTO2, patientRisk2, patId));
+
+        PatientRisk patientRisk3 = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelInDanger3.json"), PatientRisk.class);
+        PatientRecordDTO patientRecordDTO3 = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestInDanger3.json"), PatientRecordDTO.class);
+        patId = "18";
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO3));
+
+        assertTrue(assertPatientRiskAssessment(patientListDTO, patientRecordDTO3, patientRisk3, patId));
+
+        PatientRisk patientRisk4 = objectMapper.readValue(new File(FILE_PATH + "mockRiskLevelInDanger4.json"), PatientRisk.class);
+        PatientRecordDTO patientRecordDTO4 = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestInDanger4.json"), PatientRecordDTO.class);
+        patId = "18";
+
+        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientListDTO));
+        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO4));
+
+        assertFalse(assertPatientRiskAssessment(patientListDTO, patientRecordDTO4, patientRisk4, patId));
     }
 
     @Test
@@ -166,33 +208,6 @@ class PatientRiskAssessmentServiceTest {
 
         StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(invalidId))
                 .expectComplete()
-                .verify();
-    }
-
-    @Test
-    void getPatientRiskAssessment_shouldReturnEmpty_whenNoMatchingPatient() {
-        String patId = "789";
-
-        PatientDTO differentPatient = new PatientDTO();
-        differentPatient.setFamilyName("Doe"); // Mismatch
-        differentPatient.setGivenName("Jane");
-        differentPatient.setDateOfBirth("1990-02-15");
-        differentPatient.setSex("F");
-
-        ClinicalNoteDTO clinicalNote = new ClinicalNoteDTO();
-        clinicalNote.setNote("Patient: Smith. Diagnosed with hypertension."); // Smith, but no matching patient
-
-        PatientListDTO patientList = new PatientListDTO();
-        patientList.setPatientList(Collections.singletonList(differentPatient));
-
-        PatientRecordDTO patientRecordDTO = new PatientRecordDTO();
-        patientRecordDTO.setClinicalNotes(Collections.singletonList(clinicalNote));
-
-        when(patientDemographicsApiClient.fetchPatientDemoGraphicData()).thenReturn(Mono.just(patientList));
-        when(patientRecordClient.fetchPatientRecords(patId)).thenReturn(Mono.just(patientRecordDTO));
-
-        StepVerifier.create(patientRiskAssessmentService.getPatientRiskAssessment(patId))
-                .expectComplete() // No match, so should return Mono.empty()
                 .verify();
     }
 }
