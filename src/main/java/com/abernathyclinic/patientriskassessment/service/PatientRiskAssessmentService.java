@@ -79,7 +79,6 @@ public class PatientRiskAssessmentService {
             }
         }
 
-        System.out.println("Age: " + age + " Gender: " + gender + " Counts: " + matchedTriggers);
         if (matchedTriggers == 0) {
             return "None";
         }
