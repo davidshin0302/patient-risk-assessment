@@ -65,7 +65,7 @@ public class PatientRiskAssessmentService {
         return output;
     }
 
-    public String determineRiskLevel(List<ClinicalNoteDTO> clinicalNotes, PatientDTO patientDTO) {
+    private String determineRiskLevel(List<ClinicalNoteDTO> clinicalNotes, PatientDTO patientDTO) {
         final String FEMALE = "f";
         final String MALE = "m";
         String result = "None";
@@ -79,6 +79,7 @@ public class PatientRiskAssessmentService {
             }
         }
 
+        System.out.println("Age: " + age + " Gender: " + gender + " Counts: " + matchedTriggers);
         if (matchedTriggers == 0) {
             return "None";
         }
@@ -117,10 +118,10 @@ public class PatientRiskAssessmentService {
             String riskLevel = determineRiskLevel(clinicalNotes, patientDTO);
 
             patientRisk = PatientRisk.builder()
-                    .firstName(patientDTO.getGivenName() != null ? patientDTO.getGivenName() : "")
-                    .lastName(patientDTO.getFamilyName() != null ? patientDTO.getFamilyName() : "")
-                    .age(patientAge != null ? patientAge : "")
-                    .riskLevel(riskLevel != null ? riskLevel : "")
+                    .firstName(patientDTO.getGivenName())
+                    .lastName(patientDTO.getFamilyName())
+                    .age(patientAge)
+                    .riskLevel(riskLevel)
                     .build();
         } else {
             patientRisk = null;
