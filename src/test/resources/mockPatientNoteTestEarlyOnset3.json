@@ -1,0 +1,22 @@
+{
+  "id": "67dcc718f270366f20ee0c2a",
+  "patId": "17",
+  "clinicalNotes": [
+    {
+      "date": "2025-03-20",
+      "note": "Patient: TestEarlyOnset3 Practitioner's notes/recommendations: Patient states that walking up stairs has become difficult Patient also complains that they are having shortness of breath Lab results indicate Antibodies present elevated Reaction to medication"
+    },
+    {
+      "date": "2025-03-20",
+      "note": "Patient: TestEarlyOnset3 Practitioner's notes/recommendations: Patient states that they are experiencing back pain when seated for a long time"
+    },
+    {
+      "date": "2025-03-20",
+      "note": "Patient: TestEarlyOnset3 Practitioner's notes/recommendations: Patient states that they are a short term Smoker Hemoglobin A1C above recommended level"
+    },
+    {
+      "date": "2025-03-20",
+      "note": "Patient: TestEarlyOnset3 Practitioner's notes/recommendations: Patient states that Body Height, Dizziness, and Cholesterol."
+    }
+  ]
+}
