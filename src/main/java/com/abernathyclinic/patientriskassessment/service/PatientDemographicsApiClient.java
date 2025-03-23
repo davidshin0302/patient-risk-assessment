@@ -10,17 +10,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+/**
+ * Service class to interact with the Patient Demographics API.
+ * This class handles fetching patient demographic data from an external API.
+ */
 @Slf4j
 @Service
 public class PatientDemographicsApiClient {
     private final WebClient webClient;
 
-
+    /**
+     * Constructs a new PatientDemographicsApiClient.
+     *
+     * @param webClientBuilder The WebClient.Builder to configure the WebClient.
+     * @param url The base URL of the Patient Demographics API.
+     */
     @Autowired
     public PatientDemographicsApiClient(WebClient.Builder webClientBuilder, @Value("${patient-demographic.base-url}")  String url) {
         this.webClient = webClientBuilder.baseUrl(url).build();
     }
 
+    /**
+     * Fetches patient demographic data from the external API.
+     *
+     * @return A Mono of PatientListDTO containing the fetched data, or an empty Mono if an error occurs.
+     */
     public Mono<PatientListDTO> fetchPatientDemoGraphicData() {
         return webClient.get()
                 .uri("/patients")

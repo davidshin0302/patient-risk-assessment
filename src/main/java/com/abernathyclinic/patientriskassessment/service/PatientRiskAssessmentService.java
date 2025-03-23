@@ -16,6 +16,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+/**
+ * Service class for assessing patient risk.
+ * This class handles the logic for retrieving and calculating patient risk assessments.
+ */
 @Slf4j
 @Service
 public class PatientRiskAssessmentService {
@@ -24,6 +28,12 @@ public class PatientRiskAssessmentService {
     @Autowired
     private PatientRecordClient patientRecordClient;
 
+    /**
+     * Extracts the patient's last name from a clinical note.
+     *
+     * @param clinicalNoteDTO The clinical note from which to extract the last name.
+     * @return The extracted last name, or an empty string if not found.
+     */
     private String extractPatientName(ClinicalNoteDTO clinicalNoteDTO) {
         String prefix = "patient: ";
         String lastName = "";
@@ -46,6 +56,12 @@ public class PatientRiskAssessmentService {
         return lastName;
     }
 
+    /**
+     * Calculates the patient's age based on their birthdate.
+     *
+     * @param birthDate The patient's birthdate in "yyyy-MM-dd" format.
+     * @return The calculated age as a String, or an empty string if an error occurs.
+     */
     private String ageCalculator(String birthDate) {
         LocalDate parseDate;
         Period period;
@@ -65,6 +81,13 @@ public class PatientRiskAssessmentService {
         return output;
     }
 
+    /**
+     * Determines the patient's risk level based on clinical notes and patient demographics.
+     *
+     * @param clinicalNotes The list of clinical notes for the patient.
+     * @param patientDTO    The patient's demographic information.
+     * @return The determined risk level as a String.
+     */
     private String determineRiskLevel(List<ClinicalNoteDTO> clinicalNotes, PatientDTO patientDTO) {
         final String FEMALE = "f";
         final String MALE = "m";
@@ -99,6 +122,14 @@ public class PatientRiskAssessmentService {
         return result; //patient has no doctor’s notes containing any of the trigger
     }
 
+    /**
+     * Builds a PatientRisk object based on patient demographics and clinical notes.
+     *
+     * @param patientListDTO The list of patient demographic data.
+     * @param clinicalNotes  The list of clinical notes for the patient.
+     * @param lastName       The patient's last name.
+     * @return A Mono of PatientRisk, or an empty Mono if the patient is not found.
+     */
     private Mono<PatientRisk> buildPatientRisk(List<PatientDTO> patientListDTO, List<ClinicalNoteDTO> clinicalNotes, String lastName) {
         boolean isPatientExist = false;
         PatientRisk patientRisk;
@@ -128,6 +159,12 @@ public class PatientRiskAssessmentService {
         return (patientRisk != null) ? Mono.just(patientRisk) : Mono.empty();
     }
 
+    /**
+     * Retrieves the patient's risk assessment based on their patient ID.
+     *
+     * @param patId The patient ID to search for.
+     * @return A Mono of PatientRisk containing the risk assessment, or an empty Mono if not found or an error occurs.
+     */
     public Mono<PatientRisk> getPatientRiskAssessment(String patId) {
         return patientRecordClient.fetchPatientRecords(patId)
                 .flatMap(patientRecordDTO -> {
