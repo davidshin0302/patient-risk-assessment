@@ -1,0 +1,240 @@
+{
+  "patientRecords": [
+    {
+      "id": "67dc2eb13a6eb4013fc09bab",
+      "patId": "1",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ferguson Practitioner's notes/recommendations: Patient states that they not feeling as tired Smoker, quit within last year Lab results indicate Antibodies present elevated "
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ferguson Practitioner's notes/recommendations: Patient states that they feel tired during the day Patient also complains about muscle aches Lab reports Microalbumin elevated "
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ferguson Practitioner's notes/recommendations: Patient states that they feel tired during the day Patient also complains about muscle aches Lab reports Microalbumin elevated "
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bac",
+      "patId": "2",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Rees Practitioner's notes/recommendations: Lab reports Microalbumin elevated "
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Rees Practitioner's notes/recommendations: Patient states that they have had a Reaction to medication within last 3 months Patient also complains that their hearing continues to be Abnormal"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Rees Practitioner's notes/recommendations: Patient states that they have had a Reaction to medication within last 3 months Patient also complains that their hearing continues to be Abnormal"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Rees Practitioner's notes/recommendations: Patient states that everything seems fine Lab reports Hemoglobin A1C above recommended level Patient admits to being long term Smoker"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Arnold Practitioner's notes/recommendations: Lab reports Microalbumin elevated"
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bad",
+      "patId": "3",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Arnold Practitioner's notes/recommendations: Patient states that they are short term Smoker"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Arnold Practitioner's notes/recommendations: Patient states that they are a Smoker, quit within last year Patient also complains that of Abnormal breathing spells Lab reports Cholesterol LDL high"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Arnold Practitioner's notes/recommendations: Lab reports Cholesterol LDL high"
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bae",
+      "patId": "4",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Sharp Practitioner's notes/recommendations: Patient states that walking up stairs has become difficult Patient also complains that they are having shortness of breath Lab results indicate Antibodies present elevated Reaction to medication "
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Sharp Practitioner's notes/recommendations: Patient states that they are experiencing back pain when seated for a long time"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Sharp Practitioner's notes/recommendations: Patient states that they are a short term Smoker Hemoglobin A1C above recommended level "
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09baf",
+      "patId": "5",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ince Practitioner's notes/recommendations: Patient states that they experiencing occasional neck pain Patient also complains that certain foods now taste different Apparent Reaction to medication Body Weight above recommended level "
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ince Practitioner's notes/recommendations: Patient states that they had multiple dizziness episodes since last visit Body Height within concerned level"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ince Practitioner's notes/recommendations: Patient states that they are still experiencing occaisional neck pain Lab reports Microalbumin elevated Smoker, quit within last year "
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ince Practitioner's notes/recommendations: Patient states that they had multiple dizziness episodes since last visit Lab results indicate Antibodies present elevated"
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bb0",
+      "patId": "6",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ross Practitioner's notes/recommendations: Patient states that they feel fine Body Weight above recommended level"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Ross Practitioner's notes/recommendations: Patient states that they feel fine"
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bb1",
+      "patId": "7",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Wilson Practitioner's notes/recommendations: Patient states that they often wake with stiffness in joints Patient also complains that they are having difficulty sleeping Body Weight above recommended level Lab reports Cholesterol LDL high"
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bb2",
+      "patId": "8",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Buckland Practitioner's notes/recommendations: Lab results indicate Antibodies present elevated Hemoglobin A1C above recommended level "
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bb3",
+      "patId": "9",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Clark Practitioner's notes/recommendations: Patient states that they are having trouble concentrating on school assignments Hemoglobin A1C above recommended level"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Clark Practitioner's notes/recommendations: Patient states that they frustrated as long wait times Patient also complains that food in the vending machine is sub-par Lab reports Abnormal blood cell levels"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "http://localhost:8082/patHistory/add?patId=1%26note=Patient: Bailey Practitioner's notes/recommendations: Patient states that they are not experiencing any problems "
+        }
+      ]
+    },
+    {
+      "id": "67dc2eb13a6eb4013fc09bb4",
+      "patId": "10",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Bailey Practitioner's notes/recommendations: Patient states that they are not experiencing any problems"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Bailey Practitioner's notes/recommendations: Patient states that they are not experiencing any problems Body Weight above recommended level Patient reports multiple dizziness episodes since last visit"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Bailey Practitioner's notes/recommendations: Patient states that they are not experiencing any problems Body Height within concerned level Hemoglobin A1C above recommended level"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: Bailey Practitioner's notes/recommendations: Patient states that they are not experiencing any problems Lab reports Microalbumin elevated"
+        }
+      ]
+    },
+    {
+      "id": "67dc357e34dc542bcb97e795",
+      "patId": "11",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: TestNone Practitioner's notes/recommendations: Patient states that they are 'feeling terrific' Weight at or below recommended level"
+        }
+      ]
+    },
+    {
+      "id": "67dc357f34dc542bcb97e796",
+      "patId": "12",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: TestBorderline Practitioner's notes/recommendations: Patient states that they are feeling a great deal of stress at work Patient also complains that their hearing seems Abnormal as of late"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: TestBorderline Practitioner's notes/recommendations: Patient states that they have had a Reaction to medication within last 3 months Patient also complains that their hearing continues to be problematic"
+        }
+      ]
+    },
+    {
+      "id": "67dc357f34dc542bcb97e797",
+      "patId": "13",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-20",
+          "note": "Patient: TestInDanger Practitioner's notes/recommendations: Patient states that they are short term Smoker"
+        },
+        {
+          "date": "2025-03-20",
+          "note": "Patient: TestInDanger Practitioner's notes/recommendations: Patient states that they quit within last year Patient also complains that of Abnormal breathing spells Lab reports Cholesterol LDL high"
+        }
+      ]
+    },
+    {
+      "id": "67e1a67b8b05603c9d7993f9",
+      "patId": "14",
+      "clinicalNotes": [
+        {
+          "date": "2025-03-24",
+          "note": "Patient: TestEarlyOnset Practitioner's notes/recommendations: Patient states that walking up stairs has become difficult Patient also complains that they are having shortness of breath Lab results indicate Antibodies present elevated Reaction to medication"
+        },
+        {
+          "date": "2025-03-24",
+          "note": "Patient: TestEarlyOnset Practitioner's notes/recommendations: Patient states that they are experiencing back pain when seated for a long time"
+        },
+        {
+          "date": "2025-03-24",
+          "note": "Patient: TestEarlyOnset Practitioner's notes/recommendations: Patient states that they are a short term Smoker Hemoglobin A1C above recommended level"
+        },
+        {
+          "date": "2025-03-24",
+          "note": "Patient: TestEarlyOnset Practitioner's notes/recommendations: Patient states that Body Height, Body Weight, Cholesterol, Dizziness and Reaction"
+        }
+      ]
+    }
+  ]
+}
