@@ -1,6 +1,7 @@
 package com.abernathyclinic.patientriskassessment.service;
 
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordDTO;
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,7 @@ public class PatientRecordClient {
      * @param patId The patient ID to search for.
      * @return A Mono of PatientRecordDTO containing the fetched data, or an empty Mono if an error occurs.
      */
-    public Mono<PatientRecordDTO> fetchPatientRecords(String patId) {
+    public Mono<PatientRecordDTO> fetchPatientRecordsById(String patId) {
         return webClient.get()
                 .uri("/patHistory/get?patId=" + patId)
                 .retrieve()
@@ -51,6 +52,28 @@ public class PatientRecordClient {
                 .bodyToMono(PatientRecordDTO.class)
                 .doOnSuccess(patientRecordDTO -> {
                     log.info("Successfully fetched patient records: {}", patientRecordDTO);
+                })
+                .doOnError(error -> {
+                    log.error("Error fetching patient records: {}", error.getMessage(), error);
+                });
+    }
+
+    public Mono<PatientRecordsDTO> fetchAllPatientRecords() {
+        return webClient.get()
+                .uri("/patHistory/get/patient-records")
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                    log.error("4xx Client Error Detected: {}", clientResponse.statusCode());
+                    return Mono.empty();
+
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, response -> {
+                    log.error("500 Client Error Detected: {}", response.statusCode());
+                    return Mono.empty();
+                })
+                .bodyToMono(PatientRecordsDTO.class)
+                .doOnSuccess(patientRecordsDTO -> {
+                    log.info("Successfully fetched patient records: {}", patientRecordsDTO);
                 })
                 .doOnError(error -> {
                     log.error("Error fetching patient records: {}", error.getMessage(), error);
