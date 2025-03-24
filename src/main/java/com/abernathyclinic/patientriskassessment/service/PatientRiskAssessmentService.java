@@ -206,7 +206,7 @@ public class PatientRiskAssessmentService {
                 });
     }
 
-    public Mono<PatientRisk> getPatientRiskAssessmentByLastName(String familyName) {
+    public Mono<PatientRisk> getPatientRiskAssessmentByFamilyName(String familyName) {
         return patientRecordClient.fetchAllPatientRecords()
                 .flatMap(patientRecordsDTO -> {
                     Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();

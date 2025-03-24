@@ -51,7 +51,7 @@ public class PatientRiskAssessmentController {
     @GetMapping("/familyName")
     public Mono<ResponseEntity<String>> getPatientRiskAssessmentByLastName(@RequestParam String familyName) {
         log.info("processing assess/{} request, ", familyName);
-        return patientRiskAssessmentService.getPatientRiskAssessmentByLastName(familyName)
+        return patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(familyName)
                 .map(patientRisk -> {
                     return ResponseEntity.status(HttpStatus.OK).body(patientRisk.toString());
                 })

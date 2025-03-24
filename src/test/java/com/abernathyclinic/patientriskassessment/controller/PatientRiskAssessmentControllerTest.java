@@ -81,7 +81,7 @@ class PatientRiskAssessmentControllerTest {
 
     @Test
     void getPatientRiskAssessmentByFamilyName_shouldReturnOkStatus() {
-        when(patientRiskAssessmentService.getPatientRiskAssessmentByLastName(anyString())).thenReturn(Mono.just(patientRisk));
+        when(patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(anyString())).thenReturn(Mono.just(patientRisk));
         responseMono = patientRiskAssessmentController.getPatientRiskAssessmentByLastName(anyString());
 
         StepVerifier.create(responseMono).expectNextMatches(responseEntity -> {
@@ -93,7 +93,7 @@ class PatientRiskAssessmentControllerTest {
 
     @Test
     void getPatientRiskAssessmentByFamilyName_shouldReturnNotFound() {
-        when(patientRiskAssessmentService.getPatientRiskAssessmentByLastName(anyString())).thenReturn(Mono.empty());
+        when(patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(anyString())).thenReturn(Mono.empty());
 
         responseMono = patientRiskAssessmentController.getPatientRiskAssessmentByLastName(anyString());
 
@@ -105,7 +105,7 @@ class PatientRiskAssessmentControllerTest {
 
     @Test
     void getPatientRiskAssessmentByFamilyName_shouldReturnInternalError() {
-        when(patientRiskAssessmentService.getPatientRiskAssessmentByLastName(anyString())).thenReturn(Mono.error(new RuntimeException("Internal Error")));
+        when(patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(anyString())).thenReturn(Mono.error(new RuntimeException("Internal Error")));
 
         responseMono = patientRiskAssessmentController.getPatientRiskAssessmentByLastName(anyString());
 
