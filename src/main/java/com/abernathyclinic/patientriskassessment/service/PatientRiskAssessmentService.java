@@ -1,6 +1,8 @@
 package com.abernathyclinic.patientriskassessment.service;
 
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.ClinicalNoteDTO;
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordDTO;
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordsDTO;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientDTO;
 import com.abernathyclinic.patientriskassessment.dto.patientdemographic.PatientListDTO;
 import com.abernathyclinic.patientriskassessment.model.PatientRisk;
@@ -27,6 +29,24 @@ public class PatientRiskAssessmentService {
     private PatientDemographicsApiClient patientDemographicsApiClient;
     @Autowired
     private PatientRecordClient patientRecordClient;
+
+    public PatientRecordDTO findPatientRecord(PatientRecordsDTO patientRecordsDTO, String familyName) {
+        PatientRecordDTO output = new PatientRecordDTO();
+
+        for (PatientRecordDTO patientRecordDTO : patientRecordsDTO.getPatientRecords()) {
+            List<ClinicalNoteDTO> clinicalNotesDTO = patientRecordDTO.getClinicalNotes();
+
+            for (ClinicalNoteDTO clinicalNoteDTO : clinicalNotesDTO) {
+                String patientName = extractPatientName(clinicalNoteDTO);
+                if (patientName.equalsIgnoreCase(familyName)) {
+                    output = patientRecordDTO;
+                    break;
+                }
+            }
+        }
+        return output;
+    }
+
 
     /**
      * Extracts the patient's last name from a clinical note.
@@ -165,8 +185,8 @@ public class PatientRiskAssessmentService {
      * @param patId The patient ID to search for.
      * @return A Mono of PatientRisk containing the risk assessment, or an empty Mono if not found or an error occurs.
      */
-    public Mono<PatientRisk> getPatientRiskAssessment(String patId) {
-        return patientRecordClient.fetchPatientRecords(patId)
+    public Mono<PatientRisk> getPatientRiskAssessmentById(String patId) {
+        return patientRecordClient.fetchPatientRecordsById(patId)
                 .flatMap(patientRecordDTO -> {
                     Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
 
@@ -180,6 +200,29 @@ public class PatientRiskAssessmentService {
 
                         // Early return if no risk is found
                         return buildPatientRisk(tuple1.getPatientList(), tuple2.getClinicalNotes(), lastName);
+                    }).flatMap(patientRiskMono ->
+                            patientRiskMono.switchIfEmpty(Mono.empty()) // Ensures Mono.empty is returned if no risk is found
+                    );
+                });
+    }
+
+    public Mono<PatientRisk> getPatientRiskAssessmentByLastName(String familyName) {
+        return patientRecordClient.fetchAllPatientRecords()
+                .flatMap(patientRecordsDTO -> {
+                    Mono<PatientListDTO> patientListDTO = patientDemographicsApiClient.fetchPatientDemoGraphicData();
+
+                    return Mono.zip(patientListDTO, Mono.just(patientRecordsDTO), (tuple1, tuple2) -> {
+                        System.out.println(tuple2);
+                        PatientRecordDTO patientRecordDTO = findPatientRecord(tuple2, familyName);
+                        // Early return for null or empty clinical notes
+                        if (patientRecordDTO.getClinicalNotes() == null || patientRecordDTO.getClinicalNotes().isEmpty()) {
+                            return Mono.<PatientRisk>empty();
+                        }
+
+                        String lastName = extractPatientName(patientRecordDTO.getClinicalNotes().getFirst());
+
+                        // Early return if no risk is found
+                        return buildPatientRisk(tuple1.getPatientList(), patientRecordDTO.getClinicalNotes(), lastName);
                     }).flatMap(patientRiskMono ->
                             patientRiskMono.switchIfEmpty(Mono.empty()) // Ensures Mono.empty is returned if no risk is found
                     );
