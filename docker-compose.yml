@@ -1,0 +1,6 @@
+services:
+  patient-risk-assessment:
+    image: patient-risk-assessment
+    build: .
+    ports:
+      - "8080:8080"
