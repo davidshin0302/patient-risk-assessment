@@ -1,6 +1,7 @@
 package com.abernathyclinic.patientriskassessment.service;
 
 import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordDTO;
+import com.abernathyclinic.patientriskassessment.dto.clinicrecord.PatientRecordsDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PatientRecordClientTest {
-    PatientRecordClient patientRecordClient;
+    PatientRecordClient testPatientRecordClientById;
 
     ObjectMapper objectMapper;
 
@@ -30,62 +31,105 @@ class PatientRecordClientTest {
 
     PatientRecordDTO patientRecordDTO;
 
+    PatientRecordsDTO patientRecordsDTO;
+
+    String FILE_PATH = "src/test/resources/";
+
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
-        String FILE_PATH = "src/test/resources/mockPatientNoteTestNone.json";
+
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
-        patientRecordDTO = objectMapper.readValue(new File(FILE_PATH), PatientRecordDTO.class);
+        patientRecordDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientNoteTestNone.json"), PatientRecordDTO.class);
+        patientRecordsDTO = objectMapper.readValue(new File(FILE_PATH + "mockPatientRecords.json"), PatientRecordsDTO.class);
 
         String patId = "1";
         String url = mockWebServer.url("/patHistory/get?patId=" + patId).toString();
-        patientRecordClient = new PatientRecordClient(WebClient.builder(), url);
+        testPatientRecordClientById = new PatientRecordClient(WebClient.builder(), url);
     }
 
     @AfterEach
-    void tearDwon() throws IOException {
+    void tearDown() throws IOException {
         mockWebServer.shutdown();
     }
 
     @Test
-    void fetchPatientRecords() throws JsonProcessingException {
+    void fetchPatientRecordsById() throws JsonProcessingException {
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(HttpStatus.OK.value())
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .setBody(objectMapper.writeValueAsString(patientRecordDTO)));
 
         String patId = "1";
-        Mono<PatientRecordDTO> output = patientRecordClient.fetchPatientRecords(patId);
+        Mono<PatientRecordDTO> output = testPatientRecordClientById.fetchPatientRecordsById(patId);
         StepVerifier.create(output)
-                .expectNextMatches(patientRecrod -> {
-                    assertNotNull(patientRecrod);
+                .expectNextMatches(patientRecord -> {
+                    assertNotNull(patientRecord);
                     return true;
                 })
                 .verifyComplete();
     }
 
     @Test
-    void fetchPatientRecords_NotFound() {
+    void fetchPatientRecordsById_NotFound() {
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(HttpStatus.NOT_FOUND.value()));
 
-        String patId= "99";
-        Mono<PatientRecordDTO> output = patientRecordClient.fetchPatientRecords(patId);
+        String patId = "99";
+        Mono<PatientRecordDTO> output = testPatientRecordClientById.fetchPatientRecordsById(patId);
         StepVerifier.create(output)
                 .verifyComplete();
     }
 
     @Test
-    void fetchPatientRecords_InternalError(){
+    void fetchPatientRecordsById_InternalError() {
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 
-        String patId= "2";
-        Mono<PatientRecordDTO> output = patientRecordClient.fetchPatientRecords(patId);
+        String patId = "2";
+        Mono<PatientRecordDTO> output = testPatientRecordClientById.fetchPatientRecordsById(patId);
+        StepVerifier.create(output)
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchPatientRecordsByFamilyLastName() throws IOException {
+        String url = mockWebServer.url("/patHistory/get/patient-records").toString();
+        PatientRecordClient testPatientRecordClientByFamilyName = new PatientRecordClient(WebClient.builder(), url);
+
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(HttpStatus.OK.value())
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .setBody(objectMapper.writeValueAsString(patientRecordsDTO)));
+
+        Mono<PatientRecordsDTO> output = testPatientRecordClientById.fetchAllPatientRecords();
+        StepVerifier.create(output)
+                .expectNextMatches(patientRecords -> {
+                    assertNotNull(patientRecords);
+                    return true;
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchPatientRecordsByFamilyLastName_NotFound() {
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(HttpStatus.NOT_FOUND.value()));
+
+        Mono<PatientRecordsDTO> output = testPatientRecordClientById.fetchAllPatientRecords();
+        StepVerifier.create(output)
+                .verifyComplete();
+    }
+
+    @Test
+    void fetchPatientRecordsByFamilyLastName_InternalError() {
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+
+        Mono<PatientRecordsDTO> output = testPatientRecordClientById.fetchAllPatientRecords();
         StepVerifier.create(output)
                 .verifyComplete();
     }

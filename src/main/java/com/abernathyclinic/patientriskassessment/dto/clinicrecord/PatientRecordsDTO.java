@@ -11,8 +11,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientRecordDTO {
-    private String id;
-    private String patId;
-    private List<ClinicalNoteDTO> clinicalNotes;
+public class PatientRecordsDTO {
+    private List<PatientRecordDTO> patientRecords;
 }
