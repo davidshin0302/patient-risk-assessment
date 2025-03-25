@@ -48,6 +48,14 @@ public class PatientRiskAssessmentController {
                 });
     }
 
+    /**
+     * Retrieves the patient's risk assessment by family name via a REST endpoint.
+     *
+     * @param familyName The family name provided as a request parameter.
+     * @return A Mono of ResponseEntity containing the patient's risk assessment as a String, or:
+     * - ResponseEntity.notFound() if the family name is not found.
+     * - ResponseEntity.internalServerError() if an error occurs.
+     */
     @GetMapping("/familyName")
     public Mono<ResponseEntity<String>> getPatientRiskAssessmentByLastName(@RequestParam String familyName) {
         log.info("processing assess/{} request, ", familyName);

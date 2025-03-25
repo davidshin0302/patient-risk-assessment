@@ -30,6 +30,13 @@ public class PatientRiskAssessmentService {
     @Autowired
     private PatientRecordClient patientRecordClient;
 
+    /**
+     * Finds a patient record within a list of records by family name.
+     *
+     * @param patientRecordsDTO The DTO containing the list of patient records.
+     * @param familyName The family name to search for.
+     * @return The PatientRecordDTO matching the family name, or a new empty PatientRecordDTO if not found.
+     */
     public PatientRecordDTO findPatientRecord(PatientRecordsDTO patientRecordsDTO, String familyName) {
         PatientRecordDTO output = new PatientRecordDTO();
 
@@ -206,6 +213,12 @@ public class PatientRiskAssessmentService {
                 });
     }
 
+    /**
+     * Retrieves the patient's risk assessment by family name.
+     *
+     * @param familyName The family name to search for.
+     * @return A Mono of PatientRisk, or an empty Mono if not found or no risk data.
+     */
     public Mono<PatientRisk> getPatientRiskAssessmentByFamilyName(String familyName) {
         return patientRecordClient.fetchAllPatientRecords()
                 .flatMap(patientRecordsDTO -> {
