@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 /**
@@ -34,15 +31,40 @@ public class PatientRiskAssessmentController {
      * @param patId The patient ID to search for.
      * @return A Mono of ResponseEntity containing the risk assessment as a String if found, or a 404 Not Found status if not. Returns a 500 Internal Server Error if an error occurs.
      */
-    @GetMapping("/{id}")
-    public Mono<ResponseEntity<String>> getPatientRiskAssessmentById(@PathVariable(name = "id") String patId) {
+    @GetMapping("/id")
+    public Mono<ResponseEntity<String>> getPatientRiskAssessmentById(@RequestParam String patId) {
         log.info("Processing assess/{} request.", patId);
-        return patientRiskAssessmentService.getPatientRiskAssessment(patId)
+        return patientRiskAssessmentService.getPatientRiskAssessmentById(patId)
                 .map(patientRisk -> {
                     return ResponseEntity.status(HttpStatus.OK).body(patientRisk.toString());
                 })
                 .switchIfEmpty(Mono.defer(() -> {
                     log.error("The Id is not found: {}", patId);
+                    return Mono.just(ResponseEntity.notFound().build());
+                }))
+                .onErrorResume(ex -> {
+                    log.error("Internal Server Error: {}", ex.getMessage(), ex);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
+    }
+
+    /**
+     * Retrieves the patient's risk assessment by family name via a REST endpoint.
+     *
+     * @param familyName The family name provided as a request parameter.
+     * @return A Mono of ResponseEntity containing the patient's risk assessment as a String, or:
+     * - ResponseEntity.notFound() if the family name is not found.
+     * - ResponseEntity.internalServerError() if an error occurs.
+     */
+    @GetMapping("/familyName")
+    public Mono<ResponseEntity<String>> getPatientRiskAssessmentByLastName(@RequestParam String familyName) {
+        log.info("processing assess/{} request, ", familyName);
+        return patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(familyName)
+                .map(patientRisk -> {
+                    return ResponseEntity.status(HttpStatus.OK).body(patientRisk.toString());
+                })
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.error("The family name is not found: {}", familyName);
                     return Mono.just(ResponseEntity.notFound().build());
                 }))
                 .onErrorResume(ex -> {

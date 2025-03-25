@@ -41,12 +41,11 @@ class PatientRiskAssessmentControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         patientRisk = objectMapper.readValue(new File(FILE_PATH), PatientRisk.class);
-
-        when(patientRiskAssessmentService.getPatientRiskAssessment(anyString())).thenReturn(Mono.just(patientRisk));
     }
 
     @Test
     void getPatientRiskAssessmentById_shouldReturnOkStatus() {
+        when(patientRiskAssessmentService.getPatientRiskAssessmentById(anyString())).thenReturn(Mono.just(patientRisk));
         responseMono = patientRiskAssessmentController.getPatientRiskAssessmentById(anyString());
 
         StepVerifier.create(responseMono).expectNextMatches(responseEntity -> {
@@ -58,7 +57,7 @@ class PatientRiskAssessmentControllerTest {
 
     @Test
     void getPatientRiskAssessmentById_shouldReturnNotFound() {
-        when(patientRiskAssessmentService.getPatientRiskAssessment(anyString())).thenReturn(Mono.empty());
+        when(patientRiskAssessmentService.getPatientRiskAssessmentById(anyString())).thenReturn(Mono.empty());
 
         responseMono = patientRiskAssessmentController.getPatientRiskAssessmentById(anyString());
 
@@ -70,9 +69,45 @@ class PatientRiskAssessmentControllerTest {
 
     @Test
     void getPatientRiskAssessmentById_shouldReturnInternalError() {
-        when(patientRiskAssessmentService.getPatientRiskAssessment(anyString())).thenReturn(Mono.error(new RuntimeException("Internal Error")));
+        when(patientRiskAssessmentService.getPatientRiskAssessmentById(anyString())).thenReturn(Mono.error(new RuntimeException("Internal Error")));
 
         responseMono = patientRiskAssessmentController.getPatientRiskAssessmentById(anyString());
+
+        StepVerifier.create(responseMono).expectNextMatches(responseEntity -> {
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+            return true;
+        }).verifyComplete();
+    }
+
+    @Test
+    void getPatientRiskAssessmentByFamilyName_shouldReturnOkStatus() {
+        when(patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(anyString())).thenReturn(Mono.just(patientRisk));
+        responseMono = patientRiskAssessmentController.getPatientRiskAssessmentByLastName(anyString());
+
+        StepVerifier.create(responseMono).expectNextMatches(responseEntity -> {
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertNotNull(responseEntity);
+            return true;
+        }).verifyComplete();
+    }
+
+    @Test
+    void getPatientRiskAssessmentByFamilyName_shouldReturnNotFound() {
+        when(patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(anyString())).thenReturn(Mono.empty());
+
+        responseMono = patientRiskAssessmentController.getPatientRiskAssessmentByLastName(anyString());
+
+        StepVerifier.create(responseMono).expectNextMatches(responseEntity -> {
+            assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+            return true;
+        }).verifyComplete();
+    }
+
+    @Test
+    void getPatientRiskAssessmentByFamilyName_shouldReturnInternalError() {
+        when(patientRiskAssessmentService.getPatientRiskAssessmentByFamilyName(anyString())).thenReturn(Mono.error(new RuntimeException("Internal Error")));
+
+        responseMono = patientRiskAssessmentController.getPatientRiskAssessmentByLastName(anyString());
 
         StepVerifier.create(responseMono).expectNextMatches(responseEntity -> {
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
