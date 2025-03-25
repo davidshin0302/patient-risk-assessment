@@ -4,3 +4,28 @@ services:
     build: .
     ports:
       - "8080:8080"
+    depends_on:
+      - patient-demographics-api
+      - abernathy-clinic-patient-record
+    networks:
+      - patient-services-network
+
+  patient-demographics-api:
+    image: patient-demographics-api
+    build: ../patient-demographics-api
+    ports:
+      - "8081:8081"
+    networks:
+      - patient-services-network
+
+  abernathy-clinic-patient-record:
+    image: abernathy-clinic-patient-record
+    build: ../abernathy-clinic-patient-record
+    ports:
+      - "8082:8082"
+    networks:
+      - patient-services-network
+
+networks:
+  patient-services-network:
+    name: patient-services-network
