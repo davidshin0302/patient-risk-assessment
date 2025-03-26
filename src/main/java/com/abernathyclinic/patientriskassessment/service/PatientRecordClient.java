@@ -26,7 +26,7 @@ public class PatientRecordClient {
      * @param url              The base URL of the Patient Record API.
      */
     @Autowired
-    public PatientRecordClient(WebClient.Builder webClientBuilder, @Value("${patient-record.base-url}") String url) {
+    public PatientRecordClient(WebClient.Builder webClientBuilder, @Value("${abernathy-clinic-patient-record.docker-url}") String url) {
         this.webClient = webClientBuilder.baseUrl(url).build();
     }
 
