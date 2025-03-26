@@ -1,12 +1,12 @@
-######################
+##########################################
 # Spring Configuration
-#####################
+##########################################
 spring:
   application:
   name: PatientRiskAssessment
-#####################
+##########################################
 # Actuator Configuration
-#####################
+##########################################
 management:
   endpoint:
     health:
@@ -15,18 +15,25 @@ management:
     web:
       exposure:
         include: health, info, metrics, httpexchanges
-#####################
+##########################################
 # Server Configuration
-#####################
+##########################################
 server:
   port: 8080
-#####################
+##########################################
 # Patient DemoGraphic Endpoint
-#####################
+##########################################
 patient-demographic:
   base-url: http://localhost:8081
-#####################
-# Patient Record Endpoint
-#####################
-patient-record:
+##########################################
+# Abernathy Clinic Patient Record Endpoint
+##########################################
+abernathy-clinic-patient-record:
   base-url: http://localhost:8082
+  docker-url: http://abernathy-clinic-patient-record:8082
+  ##########################################
+  # Patient Demographics API Endpoint
+  ##########################################
+patient-demographics-api:
+  base-url: http://localhost:8081
+  docker-url: http://patient-demographics-api:8081

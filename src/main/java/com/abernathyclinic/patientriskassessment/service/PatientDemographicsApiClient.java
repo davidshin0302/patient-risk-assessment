@@ -26,7 +26,7 @@ public class PatientDemographicsApiClient {
      * @param url The base URL of the Patient Demographics API.
      */
     @Autowired
-    public PatientDemographicsApiClient(WebClient.Builder webClientBuilder, @Value("${patient-demographic.base-url}")  String url) {
+    public PatientDemographicsApiClient(WebClient.Builder webClientBuilder, @Value("${patient-demographics-api.docker-url}")  String url) {
         this.webClient = webClientBuilder.baseUrl(url).build();
     }
 
