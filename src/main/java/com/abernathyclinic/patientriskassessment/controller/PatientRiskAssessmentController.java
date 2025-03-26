@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
  * This class handles requests related to retrieving patient risk assessment information.
  */
 @Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("/assess")
 public class PatientRiskAssessmentController {
